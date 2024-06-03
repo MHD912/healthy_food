@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:hexcolor/hexcolor.dart';
 
-class ThemeData {
+class AppTheme {
+  static Color whiteColor = HexColor("#FFFFFF");
   static Color greyColor = HexColor("#AEB3BE");
   static Color greenColor = HexColor("#567F05");
   static Color lightGreenColor = HexColor("#74A71A");

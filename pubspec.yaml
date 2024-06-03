@@ -20,3 +20,18 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: Cabin
+      fonts:
+        - asset: assets/fonts/Cabin-VariableFont_wdth,wght.ttf
+    - family: Montaga
+      fonts:
+        - asset: assets/fonts/Montaga-Regular.ttf
+    - family: Mohamedamer_EBN
+      fonts:
+        - asset: assets/fonts/Mohamedamer_EBN-ELNILE Regular.ttf
