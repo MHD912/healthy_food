@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
-import 'package:healthy_food/view/login_page.dart';
+import 'package:healthy_food/core/utility/routes.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,11 +12,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      home: const LoginPage(),
+      initialRoute: '/',
+      getPages: routes,
     );
   }
 }
