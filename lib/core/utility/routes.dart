@@ -13,16 +13,22 @@ final routes = [
   GetPage(
     name: '/login',
     page: () => const LoginPage(),
-    transition: Transition.rightToLeft,
+    transition: Transition.upToDown,
     transitionDuration: const Duration(milliseconds: 1500),
-    curve: Curves.bounceIn,
+    curve: Curves.easeInOut,
   ),
   GetPage(
     name: '/signup',
     page: () => const SignupPage(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
   ),
   GetPage(
     name: '/authentication',
     page: () => const AuthenticationPage(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
   ),
 ];

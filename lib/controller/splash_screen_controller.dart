@@ -11,7 +11,7 @@ class SplashController extends GetxController {
 
   void startAnimation() async {
     await Future.delayed(
-      const Duration(milliseconds: 1500),
+      const Duration(milliseconds: 1000),
       () {
         _animationController.value = 1.0;
       },
@@ -19,9 +19,7 @@ class SplashController extends GetxController {
 
     await Future.delayed(
       const Duration(seconds: 2),
-      () {
-        Get.offNamed('/login');
-      },
+      () => Get.offNamed('/login'),
     );
   }
 

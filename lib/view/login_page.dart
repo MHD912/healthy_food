@@ -1,98 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
+import 'package:healthy_food/core/widget/custom_text_field.dart';
+import 'package:healthy_food/core/widget/success_bottom_sheet.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.whiteColor,
-      body: Stack(
-        children: [
-          BackgroundEclipseGradient(
-            colors: [
-              AppTheme.celadonGreenColor.withAlpha(150),
-              AppTheme.whiteColor.withAlpha(5),
-            ],
-          ),
-          Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: 140,
-                        // width: 200,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/images/healthy_food_logo.png",
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 45),
-                      customTextField(
-                        text: "Email",
-                        iconPath: "assets/icons/edit_icon.svg",
-                      ),
-                      customTextField(
-                        text: "Mobile Number",
-                      ),
-                      customTextField(
-                        text: "Password",
-                        iconPath: "assets/icons/visibility_off.svg",
-                      ),
-                      loginButton(),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          rememberMeButton(),
-                          forgotPasswordButton(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                createAccountButton(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return _buildPage(context);
   }
 
-  Widget customTextField({
-    required String text,
-    String? iconPath,
-    Size? iconSize,
-  }) {
-    return Container(
-      height: 42,
-      margin: const EdgeInsets.only(bottom: 15),
-      child: TextFormField(
-        decoration: AppTheme.textFieldDecoration(
-          labelText: text,
-          iconPath: iconPath,
-          iconSize: iconSize,
+  Widget _buildPage(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
+    return Scaffold(
+      backgroundColor: AppTheme.whiteColor,
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            BackgroundEclipseGradient(
+              colors: [
+                AppTheme.celadonGreenColor.withAlpha(150),
+                AppTheme.whiteColor.withAlpha(5),
+              ],
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: SizedBox(
+                height: deviceHeight,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _appLogoWidget(),
+                        const SizedBox(height: 45),
+                        const CustomTextField(
+                          text: "Email",
+                          iconPath: "assets/icons/edit_icon.svg",
+                        ),
+                        const CustomTextField(
+                          text: "Mobile Number",
+                        ),
+                        CustomTextField(
+                          text: "Password",
+                          iconPath: "assets/icons/visibility_off.svg",
+                          onIconPressed: () {},
+                        ),
+                        _loginButton(context),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _rememberMeButton(),
+                            _forgotPasswordButton(),
+                          ],
+                        ),
+                      ],
+                    ),
+                    _createAccountButton(),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget loginButton() {
+  Container _appLogoWidget() {
+    return Container(
+      height: 140,
+      // width: 200,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            "assets/images/healthy_food_logo.png",
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _loginButton(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        // showDialog(
+        //   context: context,
+        //   barrierColor: AppTheme.whiteColor.withOpacity(0.5),
+        //   builder: (context) {
+        //     return const WarningDialog();
+        //   },
+        // );
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return const SuccessBottomSheet();
+          },
+        );
+      },
       height: 35,
       minWidth: double.infinity,
       elevation: 0,
@@ -116,7 +128,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget rememberMeButton() {
+  Widget _rememberMeButton() {
     return TextButton(
       onPressed: () {},
       style: ButtonStyle(
@@ -151,7 +163,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget forgotPasswordButton() {
+  Widget _forgotPasswordButton() {
     return TextButton(
       onPressed: () {},
       style: ButtonStyle(
@@ -173,9 +185,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget createAccountButton() {
+  Widget _createAccountButton() {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Get.toNamed('/signup');
+      },
       height: 35,
       minWidth: double.infinity,
       elevation: 0,

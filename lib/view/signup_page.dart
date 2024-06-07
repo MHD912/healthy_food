@@ -1,98 +1,146 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
+import 'package:healthy_food/core/widget/custom_text_field.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.whiteColor,
-      body: Stack(
-        children: [
-          BackgroundEclipseGradient(
-            colors: [
-              AppTheme.celadonGreenColor.withAlpha(150),
-              AppTheme.whiteColor.withAlpha(5),
-            ],
-          ),
-          Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: 140,
-                        // width: 200,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/images/healthy_food_logo.png",
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 45),
-                      customTextField(
-                        text: "Email",
-                        iconPath: "assets/icons/edit_icon.svg",
-                      ),
-                      customTextField(
-                        text: "Mobile Number",
-                      ),
-                      customTextField(
-                        text: "Password",
-                        iconPath: "assets/icons/visibility_off.svg",
-                      ),
-                      loginButton(),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          rememberMeButton(),
-                          forgotPasswordButton(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                createAccountButton(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return _buildPage(context);
   }
 
-  Widget customTextField({
-    required String text,
-    String? iconPath,
-    Size? iconSize,
-  }) {
-    return Container(
-      height: 42,
-      margin: const EdgeInsets.only(bottom: 15),
-      child: TextFormField(
-        decoration: AppTheme.textFieldDecoration(
-          labelText: text,
-          iconPath: iconPath,
-          iconSize: iconSize,
+  Scaffold _buildPage(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
+    double deviceWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      backgroundColor: AppTheme.whiteColor,
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            BackgroundEclipseGradient(
+              radius: 0.9,
+              colors: [
+                AppTheme.celadonGreenColor.withAlpha(255),
+                AppTheme.whiteColor.withAlpha(200),
+              ],
+            ),
+            Container(
+              height: deviceHeight,
+              width: deviceWidth,
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _selectProfilePicture(),
+                  const SizedBox(height: 45),
+                  const CustomTextField(
+                    text: "Username",
+                  ),
+                  CustomTextField(
+                    text: "Email",
+                    iconPath: "assets/icons/edit_icon.svg",
+                    onIconPressed: () {},
+                  ),
+                  const CustomTextField(
+                    text: "Mobile Number",
+                  ),
+                  CustomTextField(
+                    text: "Password",
+                    iconPath: "assets/icons/visibility_off.svg",
+                    onIconPressed: () {},
+                  ),
+                  CustomTextField(
+                    text: "Confirm Password",
+                    iconPath: "assets/icons/visibility_off.svg",
+                    onIconPressed: () {},
+                  ),
+                  _selectCertificateButton(),
+                  const SizedBox(height: 45),
+                  _signupButton(),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account?",
+                        style: TextStyle(
+                          fontFamily: "Cabin",
+                          fontSize: 13,
+                          color: AppTheme.camaroneColor,
+                        ),
+                      ),
+                      _loginButton(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget loginButton() {
+  Widget _selectCertificateButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: MaterialButton(
+        onPressed: () {},
+        color: AppTheme.textFieldFillColor,
+        elevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            color: AppTheme.textFieldBorderColor,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Certificate PDF file",
+              style: TextStyle(
+                fontFamily: "Cabin",
+                fontSize: 13,
+                color: AppTheme.springRainColor,
+              ),
+            ),
+            const SizedBox(width: 10),
+            SvgPicture.asset(
+              "assets/icons/cloud_upload.svg",
+              height: 20,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _selectProfilePicture() {
     return MaterialButton(
       onPressed: () {},
+      shape: const CircleBorder(),
+      child: SvgPicture.asset(
+        "assets/icons/camera_in_circle.svg",
+        height: 100,
+      ),
+    );
+  }
+
+  Widget _signupButton() {
+    return MaterialButton(
+      onPressed: () {
+        Get.toNamed('/authentication');
+      },
       height: 35,
       minWidth: double.infinity,
       elevation: 0,
@@ -110,7 +158,7 @@ class SignupPage extends StatelessWidget {
         ),
       ),
       child: Text(
-        "Log in",
+        "Sign up",
         style: AppTheme.buttonTextStyle,
       ),
     );
@@ -151,50 +199,27 @@ class SignupPage extends StatelessWidget {
     );
   }
 
-  Widget forgotPasswordButton() {
+  Widget _loginButton() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Get.toNamed('/login');
+      },
       style: ButtonStyle(
+        visualDensity: VisualDensity.compact,
         padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 8),
+          EdgeInsets.zero,
         ),
         overlayColor: WidgetStatePropertyAll(
           AppTheme.pepperMintColor,
         ),
       ),
       child: Text(
-        "Forgot Password?",
+        "Login",
         style: TextStyle(
           fontFamily: "Cabin",
           fontSize: 13,
-          color: AppTheme.camaroneColor,
+          color: AppTheme.forestGreenColor,
         ),
-      ),
-    );
-  }
-
-  Widget createAccountButton() {
-    return MaterialButton(
-      onPressed: () {},
-      height: 35,
-      minWidth: double.infinity,
-      elevation: 0,
-      hoverElevation: 0,
-      highlightElevation: 0,
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
-      ),
-      color: AppTheme.pepperMintColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50),
-        side: BorderSide(
-          color: AppTheme.springRainColor,
-          width: 1,
-        ),
-      ),
-      child: Text(
-        "Create new account",
-        style: AppTheme.buttonTextStyle,
       ),
     );
   }

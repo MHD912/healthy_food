@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AppTheme {
+  static Color lightGreyColor = const Color(0xFFDDDDDD);
   static Color greyColor = const Color(0xFFAEB3BE);
+  static Color darkGreyColor = const Color(0xFF757575);
+
   static Color blackColor = const Color(0xFF000000);
   static Color whiteColor = const Color(0xFFFFFFFF);
+  static Color offWhiteColor = const Color(0xFFFFFDFD);
+
   static Color christiColor = const Color(0xFF74A71A);
   static Color limeadeColor = const Color(0xFF567F05);
   static Color camaroneColor = const Color(0xFF035014);
   static Color springRainColor = const Color(0xFFA3C5B0);
   static Color pepperMintColor = const Color(0xFFE9F6E7);
+  static Color forestGreenColor = const Color(0xFF25A340);
   static Color summerGreenColor = const Color(0xFF97BFA0);
   static Color celadonGreenColor = const Color(0xFFB6E5B9);
+
   static Color textFieldFillColor = const Color(0xFFFAFFF8);
   static Color textFieldBorderColor = const Color(0xFFD7DDDB);
 
@@ -33,6 +40,7 @@ class AppTheme {
     required String labelText,
     String? iconPath,
     Size? iconSize,
+    void Function()? onPressed,
   }) {
     return InputDecoration(
       suffixIcon: (iconPath == null)
@@ -40,7 +48,7 @@ class AppTheme {
           : Padding(
               padding: const EdgeInsets.only(right: 10),
               child: MaterialButton(
-                onPressed: () {},
+                onPressed: onPressed,
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 shape: const CircleBorder(),
                 child: SvgPicture.asset(
@@ -122,7 +130,7 @@ class AppTheme {
       ),
     ),
     textSelectionTheme: TextSelectionThemeData(
-      cursorColor: AppTheme.christiColor,
+      cursorColor: AppTheme.celadonGreenColor,
       selectionHandleColor: AppTheme.christiColor,
       selectionColor: AppTheme.christiColor.withOpacity(0.5),
     ),
