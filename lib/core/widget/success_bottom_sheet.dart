@@ -59,25 +59,29 @@ class SuccessBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          MaterialButton(
-            onPressed: () {},
-            minWidth: 170,
-            elevation: 0,
-            hoverElevation: 0,
-            highlightElevation: 0,
-            color: AppTheme.celadonGreenColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Text(
-              "Continue",
-              style: TextStyle(
-                fontSize: 16,
-                color: AppTheme.camaroneColor,
-              ),
-            ),
-          ),
+          _continueButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _continueButton() {
+    return MaterialButton(
+      onPressed: () {},
+      minWidth: 170,
+      elevation: 0,
+      hoverElevation: 0,
+      highlightElevation: 0,
+      color: AppTheme.celadonGreenColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        "Continue",
+        style: TextStyle(
+          fontSize: 16,
+          color: AppTheme.camaroneColor,
+        ),
       ),
     );
   }

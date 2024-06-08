@@ -12,28 +12,16 @@ class AuthenticationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _buildPage(context);
+  }
+
+  Scaffold _buildPage(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppTheme.whiteColor,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: SvgPicture.asset(
-              "assets/icons/back_button.svg",
-            ),
-          ),
-        ),
-        leadingWidth: 50,
-      ),
+      appBar: _appBar(),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -81,85 +69,14 @@ class AuthenticationPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 80),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: PinCodeTextField(
-                          appContext: context,
-                          length: 6,
-                          obscureText: false,
-                          animationType: AnimationType.scale,
-                          textStyle: TextStyle(
-                            color: AppTheme.darkGreyColor,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Cabin',
-                            fontSize: 15,
-                          ),
-                          errorTextSpace: 25,
-                          pinTheme: PinTheme(
-                            shape: PinCodeFieldShape.circle,
-                            borderRadius: BorderRadius.circular(48),
-                            borderWidth: 0.5,
-                            fieldHeight: 48,
-                            fieldWidth: 48,
-                            activeColor: AppTheme.celadonGreenColor,
-                            activeFillColor: Colors.white,
-                            inactiveColor: AppTheme.lightGreyColor,
-                            inactiveFillColor: Colors.white,
-                            selectedColor: AppTheme.celadonGreenColor,
-                            selectedFillColor: Colors.white,
-                          ),
-                          animationDuration: const Duration(milliseconds: 300),
-                          backgroundColor: Colors.transparent,
-                          enableActiveFill: true,
-                          inputFormatters: [
-                            UpperCaseTextFormatter(),
-                          ],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the code';
-                            }
-                            return null;
-                          },
-                          onCompleted: (value) {
-                            // Handle pin code completion
-                          },
-                          onChanged: (value) {
-                            // Handle pin code change
-                          },
-                        ),
-                      ),
+                      _pinCodeTextField(context),
                       const SizedBox(height: 5),
-                      Text(
-                        "03:00",
-                        style: TextStyle(
-                          color: AppTheme.camaroneColor,
-                          fontFamily: 'Mohamedamer_EBN',
-                          fontSize: 17,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextButton(
-                          onPressed: () {},
-                          style: ButtonStyle(
-                            overlayColor: WidgetStatePropertyAll(
-                              AppTheme.pepperMintColor,
-                            ),
-                          ),
-                          child: Text(
-                            "Send again",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppTheme.camaroneColor,
-                            ),
-                          ),
-                        ),
-                      )
+                      _timeCounter(),
+                      _sendAgainButton()
                     ],
                   ),
                   Flexible(
-                    child: _sendButton(context),
+                    child: _submitButton(context),
                   ),
                   // const SizedBox(height: 5),
                 ],
@@ -171,7 +88,27 @@ class AuthenticationPage extends StatelessWidget {
     );
   }
 
-  Container _appLogoWidget() {
+  AppBar _appBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      leading: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: SvgPicture.asset(
+            "assets/icons/back_button.svg",
+          ),
+        ),
+      ),
+      leadingWidth: 50,
+    );
+  }
+
+  Widget _appLogoWidget() {
     return Container(
       height: 80,
       margin: const EdgeInsets.only(top: 65),
@@ -185,7 +122,90 @@ class AuthenticationPage extends StatelessWidget {
     );
   }
 
-  Widget _sendButton(BuildContext context) {
+  Widget _pinCodeTextField(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: PinCodeTextField(
+        appContext: context,
+        length: 6,
+        obscureText: false,
+        animationType: AnimationType.scale,
+        textStyle: TextStyle(
+          color: AppTheme.darkGreyColor,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Cabin',
+          fontSize: 15,
+        ),
+        errorTextSpace: 25,
+        pinTheme: PinTheme(
+          shape: PinCodeFieldShape.circle,
+          borderRadius: BorderRadius.circular(48),
+          borderWidth: 0.5,
+          fieldHeight: 48,
+          fieldWidth: 48,
+          activeColor: AppTheme.celadonGreenColor,
+          activeFillColor: Colors.white,
+          inactiveColor: AppTheme.lightGreyColor,
+          inactiveFillColor: Colors.white,
+          selectedColor: AppTheme.celadonGreenColor,
+          selectedFillColor: Colors.white,
+        ),
+        animationDuration: const Duration(milliseconds: 300),
+        backgroundColor: Colors.transparent,
+        enableActiveFill: true,
+        inputFormatters: [
+          UpperCaseTextFormatter(),
+        ],
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter the code';
+          }
+          return null;
+        },
+        onCompleted: (value) {
+          // Handle pin code completion
+        },
+        onChanged: (value) {
+          // Handle pin code change
+        },
+      ),
+    );
+  }
+
+  Widget _timeCounter() {
+    return Text(
+      "03:00",
+      style: TextStyle(
+        color: AppTheme.camaroneColor,
+        fontFamily: 'Mohamedamer_EBN',
+        fontSize: 17,
+      ),
+    );
+  }
+
+  Widget _sendAgainButton() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+        onPressed: () {},
+        style: ButtonStyle(
+          overlayColor: WidgetStatePropertyAll(
+            AppTheme.pepperMintColor,
+          ),
+        ),
+        child: Text(
+          "Send again",
+          style: TextStyle(
+            fontSize: 16,
+            color: AppTheme.camaroneColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _submitButton(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 140),
       margin: const EdgeInsets.symmetric(horizontal: 15),

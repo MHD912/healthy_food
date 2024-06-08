@@ -71,31 +71,35 @@ class ErrorDialog extends StatelessWidget {
                 height: 66,
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: MaterialButton(
-                  onPressed: () {},
-                  minWidth: 115,
-                  elevation: 0,
-                  hoverElevation: 0,
-                  highlightElevation: 0,
-                  color: AppTheme.camaroneColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Text(
-                    "Try again",
-                    style: TextStyle(
-                      color: AppTheme.offWhiteColor,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            )
+            _tryAgainButton()
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _tryAgainButton() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: MaterialButton(
+          onPressed: () {},
+          minWidth: 115,
+          elevation: 0,
+          hoverElevation: 0,
+          highlightElevation: 0,
+          color: AppTheme.camaroneColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Text(
+            "Try again",
+            style: TextStyle(
+              color: AppTheme.offWhiteColor,
+              fontSize: 14,
+            ),
+          ),
         ),
       ),
     );

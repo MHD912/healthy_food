@@ -44,39 +44,9 @@ class LogoutDialog extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 35),
-                  MaterialButton(
-                    onPressed: () {},
-                    minWidth: 115,
-                    elevation: 0,
-                    hoverElevation: 0,
-                    highlightElevation: 0,
-                    color: AppTheme.celadonGreenColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Text(
-                      "No",
-                      style: TextStyle(
-                          color: AppTheme.camaroneColor, fontSize: 13),
-                    ),
-                  ),
+                  _discardButton(),
                   const SizedBox(height: 10),
-                  MaterialButton(
-                    onPressed: () {},
-                    minWidth: 115,
-                    elevation: 0,
-                    hoverElevation: 0,
-                    highlightElevation: 0,
-                    color: AppTheme.celadonGreenColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Text(
-                      "Yes, Log Me out",
-                      style: TextStyle(
-                          color: AppTheme.camaroneColor, fontSize: 13),
-                    ),
-                  ),
+                  _confirmLogoutButton(),
                 ],
               ),
             ),
@@ -89,6 +59,42 @@ class LogoutDialog extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _discardButton() {
+    return MaterialButton(
+      onPressed: () {},
+      minWidth: 115,
+      elevation: 0,
+      hoverElevation: 0,
+      highlightElevation: 0,
+      color: AppTheme.celadonGreenColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        "No",
+        style: TextStyle(color: AppTheme.camaroneColor, fontSize: 13),
+      ),
+    );
+  }
+
+  Widget _confirmLogoutButton() {
+    return MaterialButton(
+      onPressed: () {},
+      minWidth: 115,
+      elevation: 0,
+      hoverElevation: 0,
+      highlightElevation: 0,
+      color: AppTheme.celadonGreenColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        "Yes, Log Me out",
+        style: TextStyle(color: AppTheme.camaroneColor, fontSize: 13),
       ),
     );
   }
