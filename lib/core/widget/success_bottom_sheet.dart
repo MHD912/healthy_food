@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -12,11 +13,12 @@ class SuccessBottomSheet extends StatelessWidget {
       height: 400,
       width: double.infinity,
       decoration: BoxDecoration(
-          color: AppTheme.offWhiteColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          )),
+        color: AppTheme.offWhiteColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -67,7 +69,9 @@ class SuccessBottomSheet extends StatelessWidget {
 
   Widget _continueButton() {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Get.offAllNamed('/login');
+      },
       minWidth: 170,
       elevation: 0,
       hoverElevation: 0,

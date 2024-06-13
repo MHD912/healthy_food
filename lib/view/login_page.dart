@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:healthy_food/controller/login_controller.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 import 'package:healthy_food/core/widget/custom_text_field.dart';
-import 'package:healthy_food/core/widget/success_bottom_sheet.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final double _deviceHeight, _deviceWidth;
+  final controller = Get.find<LoginController>();
+  LoginPage({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +18,6 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildPage(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppTheme.whiteColor,
       body: SingleChildScrollView(
@@ -28,40 +31,47 @@ class LoginPage extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: SizedBox(
-                height: deviceHeight,
+              margin: EdgeInsets.symmetric(
+                horizontal: _deviceWidth * 0.1,
+              ),
+              child: Container(
+                height: _deviceHeight,
+                width: _deviceWidth,
+                alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
+                    _appLogoWidget(),
+                    const SizedBox(height: 45),
+                    const CustomTextField(
+                      text: "Email",
+                      iconPath: "assets/icons/edit_icon.svg",
+                    ),
+                    const CustomTextField(
+                      text: "Mobile Number",
+                    ),
+                    GetX<LoginController>(
+                      builder: (controller) => CustomTextField(
+                        text: "Password",
+                        iconPath: (controller.showPassword.value)
+                            ? "assets/icons/visibility_on.svg"
+                            : "assets/icons/visibility_off.svg",
+                        onIconPressed: () {
+                          controller.toggleShowPassword();
+                        },
+                      ),
+                    ),
+                    _loginButton(context),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _appLogoWidget(),
-                        const SizedBox(height: 45),
-                        const CustomTextField(
-                          text: "Email",
-                          iconPath: "assets/icons/edit_icon.svg",
-                        ),
-                        const CustomTextField(
-                          text: "Mobile Number",
-                        ),
-                        CustomTextField(
-                          text: "Password",
-                          iconPath: "assets/icons/visibility_off.svg",
-                          onIconPressed: () {},
-                        ),
-                        _loginButton(context),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _rememberMeButton(),
-                            _forgotPasswordButton(),
-                          ],
-                        ),
+                        _rememberMeButton(),
+                        _forgotPasswordButton(),
                       ],
+                    ),
+                    SizedBox(
+                      height: _deviceHeight * 0.13,
                     ),
                     _createAccountButton(),
                   ],
@@ -76,8 +86,7 @@ class LoginPage extends StatelessWidget {
 
   Container _appLogoWidget() {
     return Container(
-      height: 140,
-      // width: 200,
+      height: _deviceHeight * 0.16,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
@@ -90,23 +99,16 @@ class LoginPage extends StatelessWidget {
 
   Widget _loginButton(BuildContext context) {
     return MaterialButton(
-      onPressed: () {
-        // showDialog(
-        //   context: context,
-        //   barrierColor: AppTheme.whiteColor.withOpacity(0.5),
-        //   builder: (context) {
-        //     return const WarningDialog();
-        //   },
+      onPressed: () async {
+        await controller.setToken();
+        Get.offNamed('/home');
+        // Get.dialog(
+        //   const WarningDialog(),
+        //   barrierColor: AppTheme.whiteColor.withOpacity(0.6),
         // );
-        showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return const SuccessBottomSheet();
-          },
-        );
       },
       height: 35,
-      minWidth: double.infinity,
+      minWidth: _deviceWidth,
       elevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,
@@ -130,7 +132,9 @@ class LoginPage extends StatelessWidget {
 
   Widget _rememberMeButton() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        controller.toggleRememberMe();
+      },
       style: ButtonStyle(
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 5),
@@ -142,13 +146,14 @@ class LoginPage extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            // isChecked
-            //     ? Icons.check_circle_outline
-            //     : Icons.circle_outlined,
-            Icons.check_circle_outline,
-            size: 13,
-            color: AppTheme.camaroneColor,
+          GetX<LoginController>(
+            builder: (controller) => Icon(
+              (controller.rememberMe.value)
+                  ? Icons.check_circle_outline
+                  : Icons.circle_outlined,
+              size: 13,
+              color: AppTheme.camaroneColor,
+            ),
           ),
           const SizedBox(width: 5),
           Text(
@@ -191,7 +196,7 @@ class LoginPage extends StatelessWidget {
         Get.toNamed('/signup');
       },
       height: 35,
-      minWidth: double.infinity,
+      minWidth: _deviceWidth,
       elevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,

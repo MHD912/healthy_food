@@ -1,14 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter/material.dart';
+import 'package:healthy_food/controller/authentication_controller.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
+import 'package:healthy_food/core/widget/success_bottom_sheet.dart';
 import 'package:healthy_food/core/utility/uppercase_text_formatter.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
-import 'package:healthy_food/core/widget/warning_dialog.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 class AuthenticationPage extends StatelessWidget {
-  const AuthenticationPage({super.key});
+  final double _deviceHeight, _deviceWidth;
+  AuthenticationPage({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +20,6 @@ class AuthenticationPage extends StatelessWidget {
   }
 
   Scaffold _buildPage(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppTheme.whiteColor,
       extendBodyBehindAppBar: true,
@@ -32,53 +34,51 @@ class AuthenticationPage extends StatelessWidget {
               ],
             ),
             Container(
-              height: deviceHeight,
-              width: deviceWidth,
+              height: _deviceHeight,
+              width: _deviceWidth,
               alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 25),
+              margin: EdgeInsets.symmetric(
+                horizontal: _deviceWidth * 0.06,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _appLogoWidget(),
-                      const SizedBox(height: 35),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Verification Code",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: AppTheme.camaroneColor,
-                          ),
-                        ),
+                  _appLogoWidget(),
+                  const SizedBox(height: 35),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Verification Code",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: AppTheme.camaroneColor,
                       ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "We have sent the verification code to your email address",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppTheme.blackColor,
-                          ),
-                        ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "We have sent the verification code to your email address",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppTheme.blackColor,
                       ),
-                      const SizedBox(height: 80),
-                      _pinCodeTextField(context),
-                      const SizedBox(height: 5),
-                      _timeCounter(),
-                      _sendAgainButton()
-                    ],
+                    ),
                   ),
-                  Flexible(
-                    child: _submitButton(context),
+                  SizedBox(
+                    height: _deviceHeight * 0.095,
                   ),
-                  // const SizedBox(height: 5),
+                  _pinCodeTextField(context),
+                  const SizedBox(height: 5),
+                  _timeCounter(),
+                  _sendAgainButton(),
+                  SizedBox(
+                    height: _deviceHeight * 0.15,
+                  ),
+                  _submitButton(context),
                 ],
               ),
             ),
@@ -110,7 +110,7 @@ class AuthenticationPage extends StatelessWidget {
 
   Widget _appLogoWidget() {
     return Container(
-      height: 80,
+      height: _deviceHeight * 0.095,
       margin: const EdgeInsets.only(top: 65),
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -126,6 +126,7 @@ class AuthenticationPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: PinCodeTextField(
+        // controller: ,
         appContext: context,
         length: 6,
         obscureText: false,
@@ -174,12 +175,14 @@ class AuthenticationPage extends StatelessWidget {
   }
 
   Widget _timeCounter() {
-    return Text(
-      "03:00",
-      style: TextStyle(
-        color: AppTheme.camaroneColor,
-        fontFamily: 'Mohamedamer_EBN',
-        fontSize: 17,
+    return GetX<AuthenticationController>(
+      builder: (controller) => Text(
+        controller.timerString.value,
+        style: TextStyle(
+          color: AppTheme.camaroneColor,
+          fontFamily: 'Mohamedamer_EBN',
+          fontSize: 17,
+        ),
       ),
     );
   }
@@ -187,18 +190,47 @@ class AuthenticationPage extends StatelessWidget {
   Widget _sendAgainButton() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: TextButton(
-        onPressed: () {},
-        style: ButtonStyle(
-          overlayColor: WidgetStatePropertyAll(
-            AppTheme.pepperMintColor,
+      child: GetX<AuthenticationController>(
+        builder: (controller) => TextButton(
+          onPressed: () {
+            if (controller.timerDone.value) {
+              controller.startTimer();
+            } else {
+              Get.showSnackbar(
+                GetSnackBar(
+                  titleText: Text(
+                    "We can't send another code before the timer is up.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppTheme.whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  messageText: const SizedBox.shrink(),
+                  backgroundColor: AppTheme.blackColor,
+                  duration: const Duration(seconds: 4),
+                  snackStyle: SnackStyle.FLOATING,
+                  margin: const EdgeInsets.all(50),
+                  borderRadius: 10,
+                ),
+              );
+            }
+          },
+          style: ButtonStyle(
+            overlayColor: WidgetStatePropertyAll(
+              (controller.timerDone.value)
+                  ? AppTheme.pepperMintColor
+                  : Colors.transparent,
+            ),
           ),
-        ),
-        child: Text(
-          "Send again",
-          style: TextStyle(
-            fontSize: 16,
-            color: AppTheme.camaroneColor,
+          child: Text(
+            "Send again",
+            style: TextStyle(
+              fontSize: 16,
+              color: (controller.timerDone.value)
+                  ? AppTheme.camaroneColor
+                  : AppTheme.darkGreyColor,
+            ),
           ),
         ),
       ),
@@ -206,21 +238,23 @@ class AuthenticationPage extends StatelessWidget {
   }
 
   Widget _submitButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 140),
-      margin: const EdgeInsets.symmetric(horizontal: 15),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: MaterialButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            barrierColor: AppTheme.whiteColor.withOpacity(0.6),
-            builder: (context) {
-              return const WarningDialog();
-            },
+          // showModalBottomSheet(
+          //   context: context,
+          //   builder: (context) {
+          //     return const SuccessBottomSheet();
+          //   },
+          // );
+          Get.bottomSheet(
+            const SuccessBottomSheet(),
+            isDismissible: false,
           );
         },
         height: 35,
-        minWidth: double.infinity,
+        minWidth: _deviceWidth,
         elevation: 0,
         hoverElevation: 0,
         highlightElevation: 0,
@@ -236,7 +270,7 @@ class AuthenticationPage extends StatelessWidget {
           ),
         ),
         child: Text(
-          "Send",
+          "Submit",
           style: AppTheme.buttonTextStyle,
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class BackgroundEclipseGradient extends StatelessWidget {
@@ -12,8 +13,8 @@ class BackgroundEclipseGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double deviceWidth = MediaQuery.of(context).size.height;
+    double deviceHeight = Get.height;
+    double deviceWidth = Get.width;
     return Container(
       height: deviceHeight,
       width: deviceWidth,

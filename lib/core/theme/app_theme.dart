@@ -53,7 +53,10 @@ class AppTheme {
                 shape: const CircleBorder(),
                 child: SvgPicture.asset(
                   iconPath,
-                  // height: 15,
+                  color: AppTheme.springRainColor,
+                  // theme: SvgTheme(
+                  //   currentColor: AppTheme.springRainColor,
+                  // ),
                 ),
               ),
             ),

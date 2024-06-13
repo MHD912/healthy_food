@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
@@ -6,6 +7,9 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     startAnimation();
   }
 

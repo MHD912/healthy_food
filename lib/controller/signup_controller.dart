@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class LoginController extends GetxController {
+class SignupController extends GetxController {
+  var usernameController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
   var passwordController = TextEditingController();
-  RxBool rememberMe = false.obs;
+  var confirmPasswordController = TextEditingController();
   RxBool showPassword = false.obs;
-
-  void toggleRememberMe() {
-    rememberMe.value = !rememberMe.value;
-  }
+  RxBool showConfirmPassword = false.obs;
 
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
+  }
+
+  void toggleShowConfirmPassword() {
+    showConfirmPassword.value = !showConfirmPassword.value;
   }
 
   Future<void> setToken() async {

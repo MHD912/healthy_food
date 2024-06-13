@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class LogoutDialog extends StatelessWidget {
@@ -83,7 +85,10 @@ class LogoutDialog extends StatelessWidget {
 
   Widget _confirmLogoutButton() {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        GetStorage().remove("token");
+        Get.offAllNamed('/login');
+      },
       minWidth: 115,
       elevation: 0,
       hoverElevation: 0,

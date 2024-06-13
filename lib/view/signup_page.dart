@@ -1,12 +1,16 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:healthy_food/controller/signup_controller.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 import 'package:healthy_food/core/widget/custom_text_field.dart';
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+  final double _deviceHeight, _deviceWidth;
+  SignupPage({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,6 @@ class SignupPage extends StatelessWidget {
   }
 
   Scaffold _buildPage(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppTheme.whiteColor,
       body: SingleChildScrollView(
@@ -29,10 +31,12 @@ class SignupPage extends StatelessWidget {
               ],
             ),
             Container(
-              height: deviceHeight,
-              width: deviceWidth,
+              height: _deviceHeight,
+              width: _deviceWidth,
               alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 40),
+              margin: EdgeInsets.symmetric(
+                horizontal: _deviceWidth * 0.1,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -50,15 +54,27 @@ class SignupPage extends StatelessWidget {
                   const CustomTextField(
                     text: "Mobile Number",
                   ),
-                  CustomTextField(
-                    text: "Password",
-                    iconPath: "assets/icons/visibility_off.svg",
-                    onIconPressed: () {},
+                  GetX<SignupController>(
+                    builder: (controller) => CustomTextField(
+                      text: "Password",
+                      iconPath: (controller.showPassword.value)
+                          ? "assets/icons/visibility_on.svg"
+                          : "assets/icons/visibility_off.svg",
+                      onIconPressed: () {
+                        controller.toggleShowPassword();
+                      },
+                    ),
                   ),
-                  CustomTextField(
-                    text: "Confirm Password",
-                    iconPath: "assets/icons/visibility_off.svg",
-                    onIconPressed: () {},
+                  GetX<SignupController>(
+                    builder: (controller) => CustomTextField(
+                      text: "Confirm Password",
+                      iconPath: (controller.showConfirmPassword.value)
+                          ? "assets/icons/visibility_on.svg"
+                          : "assets/icons/visibility_off.svg",
+                      onIconPressed: () {
+                        controller.toggleShowConfirmPassword();
+                      },
+                    ),
                   ),
                   _selectCertificateButton(),
                   const SizedBox(height: 45),
@@ -131,7 +147,7 @@ class SignupPage extends StatelessWidget {
       shape: const CircleBorder(),
       child: SvgPicture.asset(
         "assets/icons/camera_in_circle.svg",
-        height: 100,
+        height: _deviceHeight * 0.12,
       ),
     );
   }
@@ -142,7 +158,7 @@ class SignupPage extends StatelessWidget {
         Get.toNamed('/authentication');
       },
       height: 35,
-      minWidth: double.infinity,
+      minWidth: _deviceWidth,
       elevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,
@@ -164,45 +180,10 @@ class SignupPage extends StatelessWidget {
     );
   }
 
-  Widget rememberMeButton() {
-    return TextButton(
-      onPressed: () {},
-      style: ButtonStyle(
-        padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 5),
-        ),
-        overlayColor: WidgetStatePropertyAll(
-          AppTheme.pepperMintColor,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            // isChecked
-            //     ? Icons.check_circle_outline
-            //     : Icons.circle_outlined,
-            Icons.check_circle_outline,
-            size: 13,
-            color: AppTheme.camaroneColor,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            "Remember Me",
-            style: TextStyle(
-              fontSize: 13,
-              color: AppTheme.camaroneColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _loginButton() {
     return TextButton(
       onPressed: () {
-        Get.toNamed('/login');
+        Get.offAllNamed('/login');
       },
       style: ButtonStyle(
         visualDensity: VisualDensity.compact,
