@@ -5,12 +5,22 @@ import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class SuccessBottomSheet extends StatelessWidget {
-  const SuccessBottomSheet({super.key});
+  final double _deviceHeight, _deviceWidth;
+  SuccessBottomSheet({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
+
+  static void showBottomSheet() {
+    Get.bottomSheet(
+      SuccessBottomSheet(),
+      isDismissible: false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
+      height: _deviceHeight * 0.47,
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppTheme.offWhiteColor,
@@ -47,9 +57,9 @@ class SuccessBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          const SizedBox(
-            width: 280,
-            child: Text(
+          SizedBox(
+            width: _deviceWidth * 0.71,
+            child: const Text(
               "Congratulations! You have been successfully authenticated",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -72,7 +82,7 @@ class SuccessBottomSheet extends StatelessWidget {
       onPressed: () {
         Get.offAllNamed('/login');
       },
-      minWidth: 170,
+      minWidth: _deviceWidth * 0.43,
       elevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,

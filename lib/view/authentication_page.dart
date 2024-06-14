@@ -19,70 +19,73 @@ class AuthenticationPage extends StatelessWidget {
     return _buildPage(context);
   }
 
-  Scaffold _buildPage(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.whiteColor,
-      extendBodyBehindAppBar: true,
-      appBar: _appBar(),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            BackgroundEclipseGradient(
-              colors: [
-                AppTheme.celadonGreenColor.withAlpha(150),
-                AppTheme.whiteColor.withAlpha(5),
-              ],
-            ),
-            Container(
-              height: _deviceHeight,
-              width: _deviceWidth,
-              alignment: Alignment.center,
-              margin: EdgeInsets.symmetric(
-                horizontal: _deviceWidth * 0.06,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  _appLogoWidget(),
-                  const SizedBox(height: 35),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Verification Code",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: AppTheme.camaroneColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "We have sent the verification code to your email address",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppTheme.blackColor,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: _deviceHeight * 0.095,
-                  ),
-                  _pinCodeTextField(context),
-                  const SizedBox(height: 5),
-                  _timeCounter(),
-                  _sendAgainButton(),
-                  SizedBox(
-                    height: _deviceHeight * 0.15,
-                  ),
-                  _submitButton(context),
+  Widget _buildPage(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: AppTheme.whiteColor,
+        extendBodyBehindAppBar: true,
+        appBar: _appBar(),
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              BackgroundEclipseGradient(
+                colors: [
+                  AppTheme.celadonGreenColor.withAlpha(150),
+                  AppTheme.whiteColor.withAlpha(5),
                 ],
               ),
-            ),
-          ],
+              Container(
+                height: _deviceHeight,
+                width: _deviceWidth,
+                alignment: Alignment.center,
+                margin: EdgeInsets.symmetric(
+                  horizontal: _deviceWidth * 0.06,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    _appLogoWidget(),
+                    const SizedBox(height: 35),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Verification Code",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: AppTheme.camaroneColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "We have sent the verification code to your email address",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppTheme.blackColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: _deviceHeight * 0.095,
+                    ),
+                    _pinCodeTextField(context),
+                    const SizedBox(height: 5),
+                    _timeCounter(),
+                    _sendAgainButton(),
+                    SizedBox(
+                      height: _deviceHeight * 0.15,
+                    ),
+                    _submitButton(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -242,16 +245,7 @@ class AuthenticationPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: MaterialButton(
         onPressed: () {
-          // showModalBottomSheet(
-          //   context: context,
-          //   builder: (context) {
-          //     return const SuccessBottomSheet();
-          //   },
-          // );
-          Get.bottomSheet(
-            const SuccessBottomSheet(),
-            isDismissible: false,
-          );
+          SuccessBottomSheet.showBottomSheet();
         },
         height: 35,
         minWidth: _deviceWidth,

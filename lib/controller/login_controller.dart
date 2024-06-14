@@ -6,15 +6,23 @@ class LoginController extends GetxController {
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
   var passwordController = TextEditingController();
-  RxBool rememberMe = false.obs;
-  RxBool showPassword = false.obs;
+  bool _rememberMe, _showPassword;
+
+  LoginController()
+      : _rememberMe = false,
+        _showPassword = false;
+
+  bool get rememberMe => _rememberMe;
+  bool get showPassword => _showPassword;
 
   void toggleRememberMe() {
-    rememberMe.value = !rememberMe.value;
+    _rememberMe = !_rememberMe;
+    update(['remember_me']);
   }
 
   void toggleShowPassword() {
-    showPassword.value = !showPassword.value;
+    _showPassword = !_showPassword;
+    update(['password']);
   }
 
   Future<void> setToken() async {

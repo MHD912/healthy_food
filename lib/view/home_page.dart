@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/logout_dialog.dart';
 
@@ -22,9 +21,7 @@ class HomePage extends StatelessWidget {
             ),
             MaterialButton(
               onPressed: () {
-                Get.dialog(
-                  const LogoutDialog(),
-                );
+                LogoutDialog.showDialog();
               },
               color: AppTheme.camaroneColor,
               child: Text(

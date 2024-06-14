@@ -53,10 +53,10 @@ class AppTheme {
                 shape: const CircleBorder(),
                 child: SvgPicture.asset(
                   iconPath,
-                  color: AppTheme.springRainColor,
-                  // theme: SvgTheme(
-                  //   currentColor: AppTheme.springRainColor,
-                  // ),
+                  colorFilter: ColorFilter.mode(
+                    AppTheme.springRainColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -95,7 +95,6 @@ class AppTheme {
         ),
         borderRadius: BorderRadius.circular(10),
       ),
-      // Error state colors
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: Colors.red.shade900,

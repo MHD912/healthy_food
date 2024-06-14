@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
-class WarningDialog extends StatelessWidget {
-  const WarningDialog({super.key});
+class IncorrectInfoDialog extends StatelessWidget {
+  const IncorrectInfoDialog({super.key});
+
+  static void showDialog() {
+    Get.dialog(
+      const IncorrectInfoDialog(),
+      barrierColor: AppTheme.whiteColor.withOpacity(0.6),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

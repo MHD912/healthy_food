@@ -18,67 +18,71 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildPage(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.whiteColor,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            BackgroundEclipseGradient(
-              colors: [
-                AppTheme.celadonGreenColor.withAlpha(150),
-                AppTheme.whiteColor.withAlpha(5),
-              ],
-            ),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.symmetric(
-                horizontal: _deviceWidth * 0.1,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: AppTheme.whiteColor,
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              BackgroundEclipseGradient(
+                colors: [
+                  AppTheme.celadonGreenColor.withAlpha(150),
+                  AppTheme.whiteColor.withAlpha(5),
+                ],
               ),
-              child: Container(
-                height: _deviceHeight,
-                width: _deviceWidth,
+              Container(
                 alignment: Alignment.center,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _appLogoWidget(),
-                    const SizedBox(height: 45),
-                    const CustomTextField(
-                      text: "Email",
-                      iconPath: "assets/icons/edit_icon.svg",
-                    ),
-                    const CustomTextField(
-                      text: "Mobile Number",
-                    ),
-                    GetX<LoginController>(
-                      builder: (controller) => CustomTextField(
-                        text: "Password",
-                        iconPath: (controller.showPassword.value)
-                            ? "assets/icons/visibility_on.svg"
-                            : "assets/icons/visibility_off.svg",
-                        onIconPressed: () {
-                          controller.toggleShowPassword();
-                        },
+                margin: EdgeInsets.symmetric(
+                  horizontal: _deviceWidth * 0.1,
+                ),
+                child: Container(
+                  height: _deviceHeight,
+                  width: _deviceWidth,
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _appLogoWidget(),
+                      const SizedBox(height: 45),
+                      const CustomTextField(
+                        text: "Email",
+                        iconPath: "assets/icons/edit_icon.svg",
                       ),
-                    ),
-                    _loginButton(context),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _rememberMeButton(),
-                        _forgotPasswordButton(),
-                      ],
-                    ),
-                    SizedBox(
-                      height: _deviceHeight * 0.13,
-                    ),
-                    _createAccountButton(),
-                  ],
+                      const CustomTextField(
+                        text: "Mobile Number",
+                      ),
+                      GetBuilder<LoginController>(
+                        id: 'password',
+                        builder: (controller) => CustomTextField(
+                          text: "Password",
+                          iconPath: (controller.showPassword)
+                              ? "assets/icons/visibility_on.svg"
+                              : "assets/icons/visibility_off.svg",
+                          onIconPressed: () {
+                            controller.toggleShowPassword();
+                          },
+                        ),
+                      ),
+                      _loginButton(),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _rememberMeButton(),
+                          _forgotPasswordButton(),
+                        ],
+                      ),
+                      SizedBox(
+                        height: _deviceHeight * 0.13,
+                      ),
+                      _createAccountButton(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -97,15 +101,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _loginButton(BuildContext context) {
+  Widget _loginButton() {
     return MaterialButton(
       onPressed: () async {
-        await controller.setToken();
-        Get.offNamed('/home');
-        // Get.dialog(
-        //   const WarningDialog(),
-        //   barrierColor: AppTheme.whiteColor.withOpacity(0.6),
-        // );
+        // await controller.setToken();
+        // Get.offNamed('/home');
       },
       height: 35,
       minWidth: _deviceWidth,
@@ -146,12 +146,13 @@ class LoginPage extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          GetX<LoginController>(
+          GetBuilder<LoginController>(
+            id: 'remember_me',
             builder: (controller) => Icon(
-              (controller.rememberMe.value)
+              (controller.rememberMe)
                   ? Icons.check_circle_outline
                   : Icons.circle_outlined,
-              size: 13,
+              size: 15,
               color: AppTheme.camaroneColor,
             ),
           ),

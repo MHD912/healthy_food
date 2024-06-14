@@ -5,7 +5,16 @@ import 'package:get_storage/get_storage.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class LogoutDialog extends StatelessWidget {
-  const LogoutDialog({super.key});
+  final double _deviceHeight, _deviceWidth;
+  LogoutDialog({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
+
+  static void showDialog() {
+    Get.dialog(
+      LogoutDialog(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +24,8 @@ class LogoutDialog extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       insetPadding: EdgeInsets.zero,
       content: SizedBox(
-        height: 290,
-        width: 350,
+        height: _deviceHeight * 0.34,
+        width: _deviceWidth * 0.85,
         child: Stack(
           children: [
             Container(
@@ -33,7 +42,7 @@ class LogoutDialog extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: SizedBox(
-                      width: 160,
+                      width: _deviceWidth * 0.4,
                       child: Text(
                         "Oh no! You’re leaving... Are you sure?",
                         textAlign: TextAlign.center,
@@ -65,10 +74,13 @@ class LogoutDialog extends StatelessWidget {
     );
   }
 
-  Widget _discardButton() {
+  Widget _customButton({
+    required void Function() onPressed,
+    required String label,
+  }) {
     return MaterialButton(
-      onPressed: () {},
-      minWidth: 115,
+      onPressed: onPressed,
+      minWidth: _deviceWidth * 0.3,
       elevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,
@@ -77,30 +89,28 @@ class LogoutDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Text(
-        "No",
+        label,
         style: TextStyle(color: AppTheme.camaroneColor, fontSize: 13),
       ),
     );
   }
 
+  Widget _discardButton() {
+    return _customButton(
+      onPressed: () {
+        Get.back();
+      },
+      label: "No",
+    );
+  }
+
   Widget _confirmLogoutButton() {
-    return MaterialButton(
+    return _customButton(
       onPressed: () {
         GetStorage().remove("token");
         Get.offAllNamed('/login');
       },
-      minWidth: 115,
-      elevation: 0,
-      hoverElevation: 0,
-      highlightElevation: 0,
-      color: AppTheme.celadonGreenColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Text(
-        "Yes, Log Me out",
-        style: TextStyle(color: AppTheme.camaroneColor, fontSize: 13),
-      ),
+      label: "Yes, Log Me out",
     );
   }
 }

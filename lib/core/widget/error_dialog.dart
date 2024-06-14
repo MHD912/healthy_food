@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class ErrorDialog extends StatelessWidget {
-  const ErrorDialog({super.key});
+  final double _deviceHeight, _deviceWidth;
+  ErrorDialog({super.key})
+      : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
+
+  static void showDialog() {
+    Get.dialog(
+      ErrorDialog(),
+      barrierDismissible: false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +24,8 @@ class ErrorDialog extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       insetPadding: EdgeInsets.zero,
       content: SizedBox(
-        height: 290,
-        width: 350,
+        height: _deviceHeight * 0.34,
+        width: _deviceWidth * 0.85,
         child: Stack(
           children: [
             Container(
@@ -84,8 +95,10 @@ class ErrorDialog extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 30),
         child: MaterialButton(
-          onPressed: () {},
-          minWidth: 115,
+          onPressed: () {
+            Get.back();
+          },
+          minWidth: _deviceWidth * 0.3,
           elevation: 0,
           hoverElevation: 0,
           highlightElevation: 0,

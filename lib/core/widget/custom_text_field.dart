@@ -26,6 +26,12 @@ class CustomTextField extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
         autofocus: false,
+        magnifierConfiguration: const TextMagnifierConfiguration(
+          shouldDisplayHandlesInMagnifier: false,
+        ),
+        style: AppTheme.textFieldLabelStyle.copyWith(
+          color: AppTheme.camaroneColor,
+        ),
         decoration: AppTheme.textFieldDecoration(
           labelText: text,
           iconPath: iconPath,
