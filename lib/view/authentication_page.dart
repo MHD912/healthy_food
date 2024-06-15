@@ -1,14 +1,18 @@
 import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
-import 'package:healthy_food/controller/authentication_controller.dart';
+import 'package:healthy_food/core/widget/error_dialog.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
+import 'package:healthy_food/core/widget/alert_snack_bar.dart';
 import 'package:healthy_food/core/widget/success_bottom_sheet.dart';
+import 'package:healthy_food/controller/authentication_controller.dart';
 import 'package:healthy_food/core/utility/uppercase_text_formatter.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 
 class AuthenticationPage extends StatelessWidget {
+  final controller = Get.find<AuthenticationController>();
+  final globalKey = GlobalKey<FormState>();
   final double _deviceHeight, _deviceWidth;
   AuthenticationPage({super.key})
       : _deviceHeight = Get.height,
@@ -26,24 +30,23 @@ class AuthenticationPage extends StatelessWidget {
         backgroundColor: AppTheme.whiteColor,
         extendBodyBehindAppBar: true,
         appBar: _appBar(),
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              BackgroundEclipseGradient(
-                colors: [
-                  AppTheme.celadonGreenColor.withAlpha(150),
-                  AppTheme.whiteColor.withAlpha(5),
-                ],
-              ),
-              Container(
+        body: Stack(
+          children: [
+            BackgroundEclipseGradient(
+              colors: [
+                AppTheme.celadonGreenColor.withAlpha(150),
+                AppTheme.whiteColor.withAlpha(5),
+              ],
+            ),
+            SingleChildScrollView(
+              child: Container(
                 height: _deviceHeight,
                 width: _deviceWidth,
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 margin: EdgeInsets.symmetric(
                   horizontal: _deviceWidth * 0.06,
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   children: [
                     _appLogoWidget(),
                     const SizedBox(height: 35),
@@ -84,8 +87,8 @@ class AuthenticationPage extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -128,51 +131,50 @@ class AuthenticationPage extends StatelessWidget {
   Widget _pinCodeTextField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: PinCodeTextField(
-        // controller: ,
-        appContext: context,
-        length: 6,
-        obscureText: false,
-        animationType: AnimationType.scale,
-        textStyle: TextStyle(
-          color: AppTheme.darkGreyColor,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Cabin',
-          fontSize: 15,
+      child: GetBuilder<AuthenticationController>(
+        builder: (controller) => Form(
+          key: globalKey,
+          child: PinCodeTextField(
+            controller: controller.codeController,
+            appContext: context,
+            length: 6,
+            animationType: AnimationType.scale,
+            textStyle: TextStyle(
+              color: AppTheme.darkGreyColor,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cabin',
+              fontSize: 15,
+            ),
+            errorTextSpace: 25,
+            pinTheme: PinTheme(
+              shape: PinCodeFieldShape.circle,
+              borderRadius: BorderRadius.circular(48),
+              borderWidth: 0.5,
+              fieldHeight: 48,
+              fieldWidth: 48,
+              activeColor: AppTheme.celadonGreenColor,
+              activeFillColor: Colors.white,
+              inactiveColor: AppTheme.lightGreyColor,
+              inactiveFillColor: Colors.white,
+              selectedColor: AppTheme.celadonGreenColor,
+              selectedFillColor: Colors.white,
+            ),
+            animationDuration: const Duration(milliseconds: 300),
+            backgroundColor: Colors.transparent,
+            enableActiveFill: true,
+            inputFormatters: [
+              UpperCaseTextFormatter(),
+            ],
+            validator: controller.validator,
+            onTap: () {
+              controller.clearValidator();
+              Future.delayed(
+                const Duration(milliseconds: 100),
+                () => globalKey.currentState!.validate(),
+              );
+            },
+          ),
         ),
-        errorTextSpace: 25,
-        pinTheme: PinTheme(
-          shape: PinCodeFieldShape.circle,
-          borderRadius: BorderRadius.circular(48),
-          borderWidth: 0.5,
-          fieldHeight: 48,
-          fieldWidth: 48,
-          activeColor: AppTheme.celadonGreenColor,
-          activeFillColor: Colors.white,
-          inactiveColor: AppTheme.lightGreyColor,
-          inactiveFillColor: Colors.white,
-          selectedColor: AppTheme.celadonGreenColor,
-          selectedFillColor: Colors.white,
-        ),
-        animationDuration: const Duration(milliseconds: 300),
-        backgroundColor: Colors.transparent,
-        enableActiveFill: true,
-        inputFormatters: [
-          UpperCaseTextFormatter(),
-        ],
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter the code';
-          }
-          return null;
-        },
-        onCompleted: (value) {
-          // Handle pin code completion
-        },
-        onChanged: (value) {
-          // Handle pin code change
-        },
       ),
     );
   }
@@ -198,25 +200,8 @@ class AuthenticationPage extends StatelessWidget {
           onPressed: () {
             if (controller.timerDone.value) {
               controller.startTimer();
-            } else {
-              Get.showSnackbar(
-                GetSnackBar(
-                  titleText: Text(
-                    "We can't send another code before the timer is up.",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.whiteColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  messageText: const SizedBox.shrink(),
-                  backgroundColor: AppTheme.blackColor,
-                  duration: const Duration(seconds: 4),
-                  snackStyle: SnackStyle.FLOATING,
-                  margin: const EdgeInsets.all(50),
-                  borderRadius: 10,
-                ),
-              );
+            } else if (!Get.isSnackbarOpen) {
+              AlertSnackBar.showSnackBar();
             }
           },
           style: ButtonStyle(
@@ -245,7 +230,19 @@ class AuthenticationPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: MaterialButton(
         onPressed: () {
-          SuccessBottomSheet.showBottomSheet();
+          controller.assignValidator();
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => globalKey.currentState!.validate(),
+          ).then(
+            (result) {
+              if (result == true) {
+                SuccessBottomSheet.showBottomSheet();
+              } else {
+                ErrorDialog.showDialog();
+              }
+            },
+          );
         },
         height: 35,
         minWidth: _deviceWidth,

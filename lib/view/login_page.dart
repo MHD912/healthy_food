@@ -22,7 +22,8 @@ class LoginPage extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: AppTheme.whiteColor,
-        body: SingleChildScrollView(
+        body: SafeArea(
+          bottom: false,
           child: Stack(
             children: [
               BackgroundEclipseGradient(
@@ -32,35 +33,82 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
               Container(
+                height: _deviceHeight,
+                width: _deviceWidth,
                 alignment: Alignment.center,
                 margin: EdgeInsets.symmetric(
                   horizontal: _deviceWidth * 0.1,
                 ),
-                child: Container(
-                  height: _deviceHeight,
-                  width: _deviceWidth,
-                  alignment: Alignment.center,
+                child: SingleChildScrollView(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       _appLogoWidget(),
                       const SizedBox(height: 45),
-                      const CustomTextField(
-                        text: "Email",
-                        iconPath: "assets/icons/edit_icon.svg",
+                      GetBuilder<LoginController>(
+                        id: 'email',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.emailController,
+                            labelText: "Email",
+                            errorText: controller.emailError,
+                            iconPath: "assets/icons/edit_icon.svg",
+                            keyboardType: TextInputType.emailAddress,
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validateEmail();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.emailError != null) {
+                                controller.clearEmailError();
+                              }
+                            },
+                          );
+                        },
                       ),
-                      const CustomTextField(
-                        text: "Mobile Number",
+                      GetBuilder<LoginController>(
+                        id: 'phone',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.phoneController,
+                            labelText: "Mobile Number",
+                            errorText: controller.phoneError,
+                            keyboardType: TextInputType.phone,
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validatePhone();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.phoneError != null) {
+                                controller.clearPhoneError();
+                              }
+                            },
+                          );
+                        },
                       ),
                       GetBuilder<LoginController>(
                         id: 'password',
                         builder: (controller) => CustomTextField(
-                          text: "Password",
-                          iconPath: (controller.showPassword)
-                              ? "assets/icons/visibility_on.svg"
-                              : "assets/icons/visibility_off.svg",
+                          textController: controller.passwordController,
+                          obscureText: controller.hidePassword,
+                          labelText: "Password",
+                          errorText: controller.passwordError,
+                          iconPath: (controller.hidePassword)
+                              ? "assets/icons/visibility_off.svg"
+                              : "assets/icons/visibility_on.svg",
                           onIconPressed: () {
                             controller.toggleShowPassword();
+                          },
+                          onFocusChange: (isFocused) {
+                            if (!isFocused) {
+                              controller.validatePassword();
+                            }
+                          },
+                          onChanged: (value) {
+                            if (controller.passwordError != null) {
+                              controller.clearPasswordError();
+                            }
                           },
                         ),
                       ),
@@ -103,9 +151,14 @@ class LoginPage extends StatelessWidget {
 
   Widget _loginButton() {
     return MaterialButton(
-      onPressed: () async {
-        // await controller.setToken();
-        // Get.offNamed('/home');
+      onPressed: () {
+        controller.checkCredentials().then(
+          (result) {
+            if (result == true) {
+              Get.offNamed('/home');
+            }
+          },
+        );
       },
       height: 35,
       minWidth: _deviceWidth,

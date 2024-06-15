@@ -25,7 +25,8 @@ class SignupPage extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: AppTheme.whiteColor,
-        body: SingleChildScrollView(
+        body: SafeArea(
+          bottom: false,
           child: Stack(
             children: [
               BackgroundEclipseGradient(
@@ -42,76 +43,157 @@ class SignupPage extends StatelessWidget {
                 margin: EdgeInsets.symmetric(
                   horizontal: _deviceWidth * 0.1,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _selectProfilePicture(),
-                    const SizedBox(height: 45),
-                    const CustomTextField(
-                      text: "Username",
-                    ),
-                    CustomTextField(
-                      text: "Email",
-                      iconPath: "assets/icons/edit_icon.svg",
-                      onIconPressed: () {},
-                    ),
-                    const CustomTextField(
-                      text: "Mobile Number",
-                    ),
-                    GetBuilder<SignupController>(
-                      id: 'password',
-                      builder: (controller) => CustomTextField(
-                        text: "Password",
-                        iconPath: (controller.showPassword)
-                            ? "assets/icons/visibility_on.svg"
-                            : "assets/icons/visibility_off.svg",
-                        onIconPressed: () {
-                          controller.toggleShowPassword();
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _selectProfilePicture(),
+                      const SizedBox(height: 45),
+                      GetBuilder<SignupController>(
+                        id: 'username',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.usernameController,
+                            labelText: "Username",
+                            errorText: controller.usernameError,
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validateUsername();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.usernameError != null) {
+                                controller.clearUsernameError();
+                              }
+                            },
+                          );
                         },
                       ),
-                    ),
-                    GetBuilder<SignupController>(
-                      id: 'confirm_password',
-                      builder: (controller) {
-                        return CustomTextField(
-                          text: "Confirm Password",
-                          iconPath: (controller.showConfirmPassword)
-                              ? "assets/icons/visibility_on.svg"
-                              : "assets/icons/visibility_off.svg",
-                          onIconPressed: () {
-                            controller.toggleShowConfirmPassword();
-                          },
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: _deviceHeight * 0.13,
-                      child: Column(
+                      GetBuilder<SignupController>(
+                        id: 'email',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.emailController,
+                            labelText: "Email",
+                            errorText: controller.emailError,
+                            iconPath: "assets/icons/edit_icon.svg",
+                            keyboardType: TextInputType.emailAddress,
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validateEmail();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.emailError != null) {
+                                controller.clearEmailError();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      GetBuilder<SignupController>(
+                        id: 'phone',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.phoneController,
+                            labelText: "Mobile Number",
+                            errorText: controller.phoneError,
+                            keyboardType: TextInputType.phone,
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validatePhone();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.phoneError != null) {
+                                controller.clearPhoneError();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      GetBuilder<SignupController>(
+                        id: 'password',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController: controller.passwordController,
+                            labelText: "Password",
+                            errorText: controller.passwordError,
+                            obscureText: controller.hidePassword,
+                            iconPath: (controller.hidePassword)
+                                ? "assets/icons/visibility_off.svg"
+                                : "assets/icons/visibility_on.svg",
+                            onIconPressed: () {
+                              controller.toggleShowPassword();
+                            },
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validatePassword();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.passwordError != null) {
+                                controller.clearPasswordError();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      GetBuilder<SignupController>(
+                        id: 'confirm_password',
+                        builder: (controller) {
+                          return CustomTextField(
+                            textController:
+                                controller.confirmPasswordController,
+                            labelText: "Confirm Password",
+                            errorText: controller.confirmPasswordError,
+                            obscureText: controller.hidePassword,
+                            iconPath: (controller.hideConfirmPassword)
+                                ? "assets/icons/visibility_off.svg"
+                                : "assets/icons/visibility_on.svg",
+                            onIconPressed: () {
+                              controller.toggleShowConfirmPassword();
+                            },
+                            onFocusChange: (isFocused) {
+                              if (!isFocused) {
+                                controller.validateConfirmPassword();
+                              }
+                            },
+                            onChanged: (value) {
+                              if (controller.confirmPasswordError != null) {
+                                controller.clearConfirmPasswordError();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: _deviceHeight * 0.12,
+                        child: Column(
+                          children: [
+                            _selectCertificateButton(),
+                            _showPickedCertificate(),
+                          ],
+                        ),
+                      ),
+                      _signupButton(),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _selectCertificateButton(),
-                          _showPickedCertificate(),
+                          Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              fontFamily: "Cabin",
+                              fontSize: 13,
+                              color: AppTheme.camaroneColor,
+                            ),
+                          ),
+                          _loginButton(),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    _signupButton(),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Already have an account?",
-                          style: TextStyle(
-                            fontFamily: "Cabin",
-                            fontSize: 13,
-                            color: AppTheme.camaroneColor,
-                          ),
-                        ),
-                        _loginButton(),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -157,7 +239,7 @@ class SignupPage extends StatelessWidget {
 
   Widget _selectCertificateButton() {
     return Padding(
-      padding: const EdgeInsets.only(top: 15),
+      padding: const EdgeInsets.only(top: 5),
       child: MaterialButton(
         onPressed: () {
           controller.pickFile();
@@ -206,8 +288,8 @@ class SignupPage extends StatelessWidget {
         builder: (controller) {
           if (controller.image != null) {
             return Container(
-              height: _deviceHeight * 0.14,
-              width: _deviceHeight * 0.14,
+              height: _deviceHeight * 0.11,
+              width: _deviceHeight * 0.11,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -220,7 +302,7 @@ class SignupPage extends StatelessWidget {
           } else {
             return SvgPicture.asset(
               "assets/icons/camera_in_circle.svg",
-              height: _deviceHeight * 0.14,
+              height: _deviceHeight * 0.11,
             );
           }
         },
@@ -231,7 +313,13 @@ class SignupPage extends StatelessWidget {
   Widget _signupButton() {
     return MaterialButton(
       onPressed: () {
-        Get.toNamed('/authentication');
+        controller.checkCredentials().then(
+          (result) {
+            if (result == true) {
+              Get.toNamed('/authentication');
+            }
+          },
+        );
       },
       height: 35,
       minWidth: _deviceWidth,

@@ -3,21 +3,23 @@ import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class BackgroundEclipseGradient extends StatelessWidget {
+  final double _deviceHeight, _deviceWidth;
   final List<Color>? colors;
   final double? radius;
-  const BackgroundEclipseGradient({
+  BackgroundEclipseGradient({
     super.key,
     this.colors,
     this.radius,
-  });
+  })  : _deviceHeight = Get.height,
+        _deviceWidth = Get.width;
 
   @override
   Widget build(BuildContext context) {
-    double deviceHeight = Get.height;
-    double deviceWidth = Get.width;
+    // double deviceHeight = Get.height;
+    // double deviceWidth = Get.width;
     return Container(
-      height: deviceHeight,
-      width: deviceWidth,
+      height: _deviceHeight,
+      width: _deviceWidth,
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.bottomRight,

@@ -15,7 +15,7 @@ class SplashScreen extends StatelessWidget {
       backgroundColor: AppTheme.whiteColor,
       body: Stack(
         children: [
-          const BackgroundEclipseGradient(),
+          BackgroundEclipseGradient(),
           Center(
             child: Obx(
               () => AnimatedOpacity(

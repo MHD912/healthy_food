@@ -23,6 +23,9 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 LogoutDialog.showDialog();
               },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               color: AppTheme.camaroneColor,
               child: Text(
                 "Logout",

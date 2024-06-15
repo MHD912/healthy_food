@@ -4,7 +4,8 @@ import 'package:quiver/async.dart';
 import 'package:sprintf/sprintf.dart';
 
 class AuthenticationController extends GetxController {
-  var codeController = TextEditingController();
+  String? Function(String?)? validator;
+  final codeController = TextEditingController();
   final int _timerStart = 180;
   late int _timerCurrent;
   RxBool timerDone = false.obs;
@@ -15,6 +16,25 @@ class AuthenticationController extends GetxController {
     super.onInit();
     _timerCurrent = _timerStart;
     startTimer();
+  }
+
+  void assignValidator() {
+    validator = (String? value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter the code.';
+      } else if (value.length != 6) {
+        return 'Please enter all 6 characters.';
+      }
+      return null;
+    };
+    update();
+  }
+
+  void clearValidator() {
+    validator = (String? value) {
+      return null;
+    };
+    update();
   }
 
   void startTimer() {
@@ -40,7 +60,6 @@ class AuthenticationController extends GetxController {
 
     listener.onDone(
       () {
-        debugPrint("timer done...");
         timerDone.value = true;
         listener.cancel();
       },

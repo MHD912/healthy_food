@@ -38,11 +38,16 @@ class AppTheme {
 
   static InputDecoration textFieldDecoration({
     required String labelText,
+    String? errorText,
     String? iconPath,
     Size? iconSize,
     void Function()? onPressed,
   }) {
     return InputDecoration(
+      constraints: BoxConstraints(
+        maxHeight: (errorText != null) ? 51 : 42,
+      ),
+      contentPadding: const EdgeInsets.only(left: 12),
       suffixIcon: (iconPath == null)
           ? null
           : Padding(
@@ -67,6 +72,11 @@ class AppTheme {
             ),
       labelText: labelText,
       labelStyle: AppTheme.textFieldLabelStyle,
+      errorText: errorText,
+      errorStyle: const TextStyle(
+        height: 0.1,
+        fontFamily: 'Cabin',
+      ),
       filled: true,
       fillColor: AppTheme.textFieldFillColor,
       focusColor: AppTheme.textFieldFillColor,
@@ -133,8 +143,8 @@ class AppTheme {
     ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: AppTheme.celadonGreenColor,
-      selectionHandleColor: AppTheme.christiColor,
-      selectionColor: AppTheme.christiColor.withOpacity(0.5),
+      selectionHandleColor: AppTheme.celadonGreenColor,
+      selectionColor: AppTheme.celadonGreenColor.withOpacity(0.5),
     ),
   );
 
