@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:healthy_food/controller/login_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
-import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
+import 'package:healthy_food/controller/login_controller.dart';
 import 'package:healthy_food/core/widget/custom_text_field.dart';
+import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 
 class LoginPage extends StatelessWidget {
   final double _deviceHeight, _deviceWidth;
@@ -152,6 +152,7 @@ class LoginPage extends StatelessWidget {
   Widget _loginButton() {
     return MaterialButton(
       onPressed: () {
+        FocusManager.instance.primaryFocus?.unfocus();
         controller.checkCredentials().then(
           (result) {
             if (result == true) {

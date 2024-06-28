@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:healthy_food/controller/authentication_controller.dart';
+import 'package:healthy_food/controller/home_controller.dart';
 import 'package:healthy_food/controller/login_controller.dart';
+import 'package:healthy_food/controller/logout_controller.dart';
 import 'package:healthy_food/controller/signup_controller.dart';
 import 'package:healthy_food/controller/splash_screen_controller.dart';
 
@@ -51,6 +53,18 @@ class AuthBindings implements Bindings {
   void dependencies() {
     Get.lazyPut(
       () => AuthenticationController(),
+    );
+  }
+}
+
+class HomeBindings implements Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(
+      () => HomeController(),
+    );
+    Get.lazyPut(
+      () => LogoutController(),
     );
   }
 }

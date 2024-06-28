@@ -147,7 +147,7 @@ class SignupPage extends StatelessWidget {
                                 controller.confirmPasswordController,
                             labelText: "Confirm Password",
                             errorText: controller.confirmPasswordError,
-                            obscureText: controller.hidePassword,
+                            obscureText: controller.hideConfirmPassword,
                             iconPath: (controller.hideConfirmPassword)
                                 ? "assets/icons/visibility_off.svg"
                                 : "assets/icons/visibility_on.svg",
@@ -313,6 +313,7 @@ class SignupPage extends StatelessWidget {
   Widget _signupButton() {
     return MaterialButton(
       onPressed: () {
+        FocusManager.instance.primaryFocus?.unfocus();
         controller.checkCredentials().then(
           (result) {
             if (result == true) {

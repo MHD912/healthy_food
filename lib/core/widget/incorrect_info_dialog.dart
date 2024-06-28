@@ -4,11 +4,22 @@ import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class IncorrectInfoDialog extends StatelessWidget {
-  const IncorrectInfoDialog({super.key});
+  final String? title, content;
+  const IncorrectInfoDialog({
+    super.key,
+    this.title,
+    this.content,
+  });
 
-  static void showDialog() {
+  static void showDialog({
+    String? title,
+    String? content,
+  }) {
     Get.dialog(
-      const IncorrectInfoDialog(),
+      IncorrectInfoDialog(
+        title: title,
+        content: content,
+      ),
       barrierColor: AppTheme.whiteColor.withOpacity(0.6),
     );
   }
@@ -46,7 +57,7 @@ class IncorrectInfoDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Sorry!",
+                    title ?? "Sorry!",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Cabin',
@@ -58,7 +69,7 @@ class IncorrectInfoDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Incorrect password or email",
+                    content ?? "Incorrect password or email",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Cabin',

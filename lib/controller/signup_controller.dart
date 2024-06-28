@@ -1,12 +1,20 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:get/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:healthy_food/core/widget/error_dialog.dart';
+import 'package:get/route_manager.dart';
+import 'package:get/state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:healthy_food/core/widget/error_dialog.dart';
+import 'package:healthy_food/core/utility/dio_requests.dart';
+import 'package:healthy_food/core/widget/loading_dialog.dart';
+import 'package:healthy_food/core/service/settings_service.dart';
 
 class SignupController extends GetxController {
+  final _settingsService = Get.find<SettingsService>();
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -26,8 +34,8 @@ class SignupController extends GetxController {
         _hideConfirmPassword = true;
 
   File? get image => _image;
-  String? get phoneError => _phoneError;
   String? get emailError => _emailError;
+  String? get phoneError => _phoneError;
   bool get hidePassword => _hidePassword;
   String? get passwordError => _passwordError;
   String? get usernameError => _usernameError;
@@ -35,31 +43,53 @@ class SignupController extends GetxController {
   bool get hideConfirmPassword => _hideConfirmPassword;
   String? get confirmPasswordError => _confirmPasswordError;
 
+  set emailError(String? text) {
+    _emailError = text;
+    update(['email']);
+  }
+
+  set usernameError(String? text) {
+    _usernameError = text;
+    update(['username']);
+  }
+
+  set phoneError(String? text) {
+    _phoneError = text;
+    update(['phone']);
+  }
+
+  set passwordError(String? text) {
+    _passwordError = text;
+    update(['password']);
+  }
+
+  set confirmPasswordError(String? text) {
+    _confirmPasswordError = text;
+    update(['confirm_password']);
+  }
+
   void clearUsernameError() {
     _usernameError = null;
     update(['username']);
   }
 
+  bool validateImage() {
+    return (_image == null) ? false : true;
+  }
+
+  bool validateCertificate() {
+    return (_certificate == null) ? false : true;
+  }
+
   bool validateUsername() {
-    String username = usernameController.value.text;
+    String username = usernameController.value.text.trim();
     if (username.isEmpty) {
       _usernameError = "Username is required.";
     } else if (!GetUtils.isUsername(username)) {
       _usernameError = "Invalid username.";
-    } else if (checkUsernameAvailability()) {
-      _usernameError = "Username is already used, try a different one.";
     }
     update(['username']);
     return (_usernameError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if username is used.
-  /// Currently compares the input with fixed string "username"
-  ///
-  bool checkUsernameAvailability() {
-    String username = usernameController.value.text;
-    return (username == "username");
   }
 
   void clearEmailError() {
@@ -68,25 +98,14 @@ class SignupController extends GetxController {
   }
 
   bool validateEmail() {
-    String email = emailController.value.text;
+    String email = emailController.value.text.trim();
     if (email.isEmpty) {
       _emailError = "Email is required.";
     } else if (!GetUtils.isEmail(email)) {
       _emailError = "Invalid email.";
-    } else if (checkEmailExist()) {
-      _emailError = "Email is already used, try a different one.";
     }
     update(['email']);
     return (_emailError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if email is used.
-  /// Currently compares the input with fixed string "example@email.com"
-  ///
-  bool checkEmailExist() {
-    String email = emailController.value.text;
-    return (email == "example@email.com");
   }
 
   void clearPhoneError() {
@@ -95,25 +114,14 @@ class SignupController extends GetxController {
   }
 
   bool validatePhone() {
-    String phone = phoneController.value.text;
+    String phone = phoneController.value.text.trim();
     if (phone.isEmpty) {
       _phoneError = "Mobile number is required.";
     } else if (!GetUtils.isPhoneNumber(phone)) {
       _phoneError = "Invalid mobile number.";
-    } else if (checkPhoneExist()) {
-      _phoneError = "Mobile number is not registered.";
     }
     update(['phone']);
     return (_phoneError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if phone exists in the database.
-  /// Currently compares the input with fixed string "0958748129"
-  ///
-  bool checkPhoneExist() {
-    String phone = phoneController.value.text;
-    return (phone == "0958748129");
   }
 
   void clearPasswordError() {
@@ -122,7 +130,7 @@ class SignupController extends GetxController {
   }
 
   bool validatePassword() {
-    String password = passwordController.value.text;
+    String password = passwordController.value.text.trim();
     if (password.isEmpty) {
       _passwordError = "Password is required.";
     } else if (password.length < 8) {
@@ -132,23 +140,14 @@ class SignupController extends GetxController {
     return (_passwordError == null) ? true : false;
   }
 
-  ///
-  /// Perform API call to server to check if password is correct.
-  /// Currently compares the input with fixed string "password"
-  ///
-  bool checkPassword() {
-    String password = passwordController.value.text;
-    return (password == "password");
-  }
-
   void clearConfirmPasswordError() {
     _confirmPasswordError = null;
     update(['confirm_password']);
   }
 
   bool validateConfirmPassword() {
-    String password = passwordController.value.text;
-    String confirmPassword = confirmPasswordController.value.text;
+    String password = passwordController.value.text.trim();
+    String confirmPassword = confirmPasswordController.value.text.trim();
     if (confirmPassword.isEmpty) {
       _confirmPasswordError = "Password confirmation is required.";
     } else if (password != confirmPassword) {
@@ -226,6 +225,11 @@ class SignupController extends GetxController {
     return false;
   }
 
+  void clearAllErrors() {
+    _emailError = _phoneError =
+        _passwordError = _confirmPasswordError = _usernameError = null;
+  }
+
   Future<bool> checkCredentials() async {
     bool isUsernameValid = validateUsername();
     bool isEmailValid = validateEmail();
@@ -237,9 +241,71 @@ class SignupController extends GetxController {
         !isPhoneValid ||
         !isPasswordValid ||
         !isConfirmPasswordValid) {
-      ErrorDialog.showDialog();
+    } else {
+      LoadingDialog.showDialog();
+      return await _performAPICall();
+    }
+    return false;
+  }
+
+  Future<bool> _performAPICall() async {
+    Response? response;
+    try {
+      response = await DioRequests.requestSignup(
+        email: emailController.value.text,
+        phone: phoneController.value.text,
+        username: usernameController.value.text,
+        password: passwordController.value.text,
+        passwordConfirmation: confirmPasswordController.value.text,
+        profilePhoto: _image,
+        certificate: _certificate,
+      );
+      Get.back();
+      if (response == null) {
+        ErrorDialog.showDialog();
+        throw Exception("response is null");
+      } else {
+        final data = response.data;
+        switch (response.statusCode) {
+          case 201:
+            clearAllErrors();
+            _settingsService.setUserId(
+              id: data['data']['id'],
+              rememberMe: true,
+            );
+            _settingsService.setToken(
+              newToken: data['token'],
+              rememberMe: true,
+            );
+            _settingsService.setRefreshToken(
+              newToken: data['refresh_token'],
+              rememberMe: true,
+            );
+            debugPrint(data.toString());
+            return true;
+          case 422:
+            if (data['errors']['email'] != null) {
+              emailError = data['errors']['email'][0];
+            }
+            if (data['errors']['phone_number'] != null) {
+              phoneError = data['errors']['phone_number'][0];
+            }
+            break;
+          case 404:
+            ErrorDialog.showDialog(
+              title: "Something went wrong on our side",
+              content: "Try again later or contact support",
+            );
+            throw Exception("The route api/auth/signup could not be found.");
+          default:
+            throw Exception(
+                "Unknown response status code: ${response.toString()}");
+        }
+        throw Exception(response.toString());
+      }
+    } catch (e) {
+      debugPrint("Signup Controller: $e");
       return false;
     }
-    return true;
   }
 }

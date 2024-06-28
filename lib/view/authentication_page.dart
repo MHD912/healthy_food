@@ -7,12 +7,11 @@ import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/alert_snack_bar.dart';
 import 'package:healthy_food/core/widget/success_bottom_sheet.dart';
 import 'package:healthy_food/controller/authentication_controller.dart';
-import 'package:healthy_food/core/utility/uppercase_text_formatter.dart';
+import 'package:healthy_food/core/utility/verify_code_text_formatter.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 
 class AuthenticationPage extends StatelessWidget {
   final controller = Get.find<AuthenticationController>();
-  final globalKey = GlobalKey<FormState>();
   final double _deviceHeight, _deviceWidth;
   AuthenticationPage({super.key})
       : _deviceHeight = Get.height,
@@ -83,7 +82,7 @@ class AuthenticationPage extends StatelessWidget {
                     SizedBox(
                       height: _deviceHeight * 0.15,
                     ),
-                    _submitButton(context),
+                    _submitButton(),
                   ],
                 ),
               ),
@@ -133,7 +132,7 @@ class AuthenticationPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: GetBuilder<AuthenticationController>(
         builder: (controller) => Form(
-          key: globalKey,
+          key: controller.globalKey,
           child: PinCodeTextField(
             controller: controller.codeController,
             appContext: context,
@@ -163,14 +162,14 @@ class AuthenticationPage extends StatelessWidget {
             backgroundColor: Colors.transparent,
             enableActiveFill: true,
             inputFormatters: [
-              UpperCaseTextFormatter(),
+              VerifyCodeTextFormatter(),
             ],
             validator: controller.validator,
             onTap: () {
               controller.clearValidator();
               Future.delayed(
                 const Duration(milliseconds: 100),
-                () => globalKey.currentState!.validate(),
+                () => controller.globalKey.currentState!.validate(),
               );
             },
           ),
@@ -199,7 +198,15 @@ class AuthenticationPage extends StatelessWidget {
         builder: (controller) => TextButton(
           onPressed: () {
             if (controller.timerDone.value) {
-              controller.startTimer();
+              controller.resendVerificationCode().then(
+                (result) {
+                  if (result == true) {
+                    controller.startTimer();
+                  } else {
+                    ErrorDialog.showDialog();
+                  }
+                },
+              );
             } else if (!Get.isSnackbarOpen) {
               AlertSnackBar.showSnackBar();
             }
@@ -225,21 +232,19 @@ class AuthenticationPage extends StatelessWidget {
     );
   }
 
-  Widget _submitButton(BuildContext context) {
+  Widget _submitButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: MaterialButton(
         onPressed: () {
-          controller.assignValidator();
+          FocusManager.instance.primaryFocus?.unfocus();
           Future.delayed(
             const Duration(milliseconds: 100),
-            () => globalKey.currentState!.validate(),
+            () => controller.validateInput(),
           ).then(
-            (result) {
+            (result) async {
               if (result == true) {
-                SuccessBottomSheet.showBottomSheet();
-              } else {
-                ErrorDialog.showDialog();
+                await SuccessBottomSheet.showBottomSheet();
               }
             },
           );

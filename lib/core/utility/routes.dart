@@ -48,6 +48,7 @@ final routes = [
   GetPage(
     name: '/home',
     page: () => const HomePage(),
+    binding: HomeBindings(),
     transition: Transition.rightToLeft,
     transitionDuration: const Duration(milliseconds: 500),
     curve: Curves.easeInOut,

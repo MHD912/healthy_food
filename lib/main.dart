@@ -1,18 +1,26 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:healthy_food/core/service/dio_service.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/utility/routes.dart';
 import 'package:healthy_food/core/service/settings_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized;
-  initServices();
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  await initServices();
   runApp(const MainApp());
 }
 
-Future initServices() async {
+Future<void> initServices() async {
   await Get.putAsync(
-    () => SettingsService().init(),
+    () => SettingsService.init(),
+  );
+  await Get.putAsync(
+    () => DioService.init(),
   );
 }
 

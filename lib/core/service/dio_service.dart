@@ -1,7 +1,23 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/state_manager.dart';
 
-class DioService {
+class DioService extends GetxService {
+  static Future<DioService> init() async {
+    String configContent = await rootBundle.loadString(
+      "assets/config/config.json",
+    );
+    Map configData = jsonDecode(configContent);
+    return DioService(
+      baseOptions: BaseOptions(
+        baseUrl: configData["SERVER_BASE_URL"],
+      ),
+    );
+  }
+
   final Dio _dio;
 
   DioService({
@@ -13,12 +29,18 @@ class DioService {
     FormData? data,
     String? authToken,
   }) async {
+    Response? response;
     try {
-      Response? response = await _dio.post(
+      response = await _dio.post(
         url,
         options: Options(
-          validateStatus: (status) =>
-              (status == 200 || status == 422) ? true : false,
+          validateStatus: (status) {
+            if (status != null && status >= 200 && status <= 422) {
+              return true;
+            } else {
+              return false;
+            }
+          },
           contentType: (data != null) ? "multipart/form-data" : null,
           headers: (authToken != null)
               ? {
@@ -34,9 +56,10 @@ class DioService {
       return response;
     } on DioException catch (e) {
       debugPrint(
-          "HttpService: Could not perform POST request to [ ${_dio.options.baseUrl}$url ]");
-      debugPrint(e.response.toString());
-      return e.response;
+          "DioService: Could not perform POST request to [ ${_dio.options.baseUrl}$url ]");
+      debugPrint(response.toString());
+      debugPrint(e.toString());
+      return response;
     }
   }
 
@@ -44,12 +67,18 @@ class DioService {
     required String url,
     String? authToken,
   }) async {
+    Response? response;
     try {
-      Response? response = await _dio.get(
+      response = await _dio.get(
         url,
         options: Options(
-          validateStatus: (status) =>
-              (status == 200 || status == 422) ? true : false,
+          validateStatus: (status) {
+            if (status != null && status >= 200 && status <= 422) {
+              return true;
+            } else {
+              return false;
+            }
+          },
           headers: (authToken != null)
               ? {
                   'accept': 'application/json',
@@ -61,11 +90,11 @@ class DioService {
         ),
       );
       return response;
-    } on DioException catch (e) {
+    } on DioException catch (_) {
       debugPrint(
-          "HttpService: Could not perform GET request to [ ${_dio.options.baseUrl}$url ]");
-      debugPrint(e.response.toString());
-      return e.response;
+          "DioService: Could not perform GET request to [ ${_dio.options.baseUrl}$url ]");
+      debugPrint(response.toString());
+      return response;
     }
   }
 }

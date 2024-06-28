@@ -10,9 +10,12 @@ class SuccessBottomSheet extends StatelessWidget {
       : _deviceHeight = Get.height,
         _deviceWidth = Get.width;
 
-  static void showBottomSheet() {
-    Get.bottomSheet(
-      SuccessBottomSheet(),
+  static Future<void> showBottomSheet() async {
+    await Get.bottomSheet(
+      PopScope(
+        canPop: false,
+        child: SuccessBottomSheet(),
+      ),
       isDismissible: false,
     );
   }

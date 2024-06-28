@@ -4,14 +4,34 @@ import 'package:get/get.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 
 class ErrorDialog extends StatelessWidget {
+  final String? title, content, buttonLabel;
+  final void Function()? onPressed;
   final double _deviceHeight, _deviceWidth;
-  ErrorDialog({super.key})
-      : _deviceHeight = Get.height,
+  ErrorDialog({
+    super.key,
+    this.title,
+    this.content,
+    this.buttonLabel,
+    this.onPressed,
+  })  : _deviceHeight = Get.height,
         _deviceWidth = Get.width;
 
-  static void showDialog() {
-    Get.dialog(
-      ErrorDialog(),
+  static Future<void> showDialog({
+    String? title,
+    String? content,
+    String? buttonLabel,
+    void Function()? onPressed,
+  }) async {
+    await Get.dialog(
+      PopScope(
+        canPop: false,
+        child: ErrorDialog(
+          title: title,
+          content: content,
+          buttonLabel: buttonLabel,
+          onPressed: onPressed,
+        ),
+      ),
       barrierDismissible: false,
     );
   }
@@ -52,7 +72,7 @@ class ErrorDialog extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Something went wrong.",
+                      title ?? "Something went wrong.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppTheme.blackColor,
@@ -63,7 +83,7 @@ class ErrorDialog extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Please try again.",
+                      content ?? "Please try again.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppTheme.blackColor,
@@ -95,9 +115,10 @@ class ErrorDialog extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 30),
         child: MaterialButton(
-          onPressed: () {
-            Get.back();
-          },
+          onPressed: onPressed ??
+              () {
+                Get.back();
+              },
           minWidth: _deviceWidth * 0.3,
           elevation: 0,
           hoverElevation: 0,
@@ -107,7 +128,7 @@ class ErrorDialog extends StatelessWidget {
             borderRadius: BorderRadius.circular(50),
           ),
           child: Text(
-            "Try again",
+            buttonLabel ?? "Try again",
             style: TextStyle(
               color: AppTheme.offWhiteColor,
               fontSize: 14,

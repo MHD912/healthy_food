@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PrecacheAssets {
+class CacheableAssets {
   static final List<AssetImage> imageUrls = [];
 
   static Future<void> precacheAllImages(BuildContext context) async {

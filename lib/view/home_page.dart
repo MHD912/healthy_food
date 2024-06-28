@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:healthy_food/controller/home_controller.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/logout_dialog.dart';
 
@@ -13,11 +15,24 @@ class HomePage extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Text(
-              "Welcome to the home page !!",
-              style: TextStyle(
-                fontSize: 22,
-              ),
+            Column(
+              children: [
+                const Text(
+                  "Welcome to the home page !!",
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                GetBuilder<HomeController>(
+                  builder: (controller) => Text(
+                    "User: ${controller.getUserId()}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
             MaterialButton(
               onPressed: () {

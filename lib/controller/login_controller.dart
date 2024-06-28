@@ -1,10 +1,18 @@
+import 'package:dio/dio.dart';
+import 'package:get/route_manager.dart';
+import 'package:get/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
+import 'package:get/instance_manager.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:healthy_food/core/widget/error_dialog.dart';
+import 'package:healthy_food/core/utility/dio_requests.dart';
+import 'package:healthy_food/core/service/settings_service.dart';
 import 'package:healthy_food/core/widget/incorrect_info_dialog.dart';
+import 'package:healthy_food/core/widget/loading_dialog.dart';
 
 class LoginController extends GetxController {
+  final _settingsService = Get.find<SettingsService>();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
@@ -21,32 +29,35 @@ class LoginController extends GetxController {
   String? get phoneError => _phoneError;
   String? get passwordError => _passwordError;
 
+  set emailError(String? text) {
+    _emailError = text;
+    update(['email']);
+  }
+
+  set phoneError(String? text) {
+    _phoneError = text;
+    update(['phone']);
+  }
+
+  set passwordError(String? text) {
+    _passwordError = text;
+    update(['password']);
+  }
+
   void clearEmailError() {
     _emailError = null;
     update(['email']);
   }
 
   bool validateEmail() {
-    String email = emailController.value.text;
+    String email = emailController.value.text.trim();
     if (email.isEmpty) {
       _emailError = "Email is required.";
     } else if (!GetUtils.isEmail(email)) {
       _emailError = "Invalid email.";
     }
-    // else if (checkEmailExist(email)) {
-    //   _emailError = "Email is not registered.";
-    // }
     update(['email']);
     return (_emailError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if email exists in the database.
-  /// Currently compares the input with fixed string "example@email.com"
-  ///
-  bool checkEmailExist() {
-    String email = emailController.value.text;
-    return (email == "example@email.com");
   }
 
   void clearPhoneError() {
@@ -55,26 +66,14 @@ class LoginController extends GetxController {
   }
 
   bool validatePhone() {
-    String phone = phoneController.value.text;
+    String phone = phoneController.value.text.trim();
     if (phone.isEmpty) {
       _phoneError = "Mobile number is required.";
     } else if (!GetUtils.isPhoneNumber(phone)) {
       _phoneError = "Invalid mobile number.";
     }
-    // else if (checkPhoneExist(phone)) {
-    //   _phoneError = "Mobile number is not registered.";
-    // }
     update(['phone']);
     return (_phoneError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if phone exists in the database.
-  /// Currently compares the input with fixed string "0958748129"
-  ///
-  bool checkPhoneExist() {
-    String phone = phoneController.value.text;
-    return (phone == "0958748129");
   }
 
   void clearPasswordError() {
@@ -83,24 +82,14 @@ class LoginController extends GetxController {
   }
 
   bool validatePassword() {
-    String password = passwordController.value.text;
+    String password = passwordController.value.text.trim();
     if (password.isEmpty) {
       _passwordError = "Password is required.";
+    } else if (password.length < 8) {
+      _passwordError = "Password must be at least 8 characters long";
     }
-    // else if (checkPassword(password)) {
-    //   _passwordError = "Incorrect password, try again.";
-    // }
     update(['password']);
     return (_passwordError == null) ? true : false;
-  }
-
-  ///
-  /// Perform API call to server to check if password is correct.
-  /// Currently compares the input with fixed string "password"
-  ///
-  bool checkPassword() {
-    String password = passwordController.value.text;
-    return (password == "password");
   }
 
   void toggleRememberMe() {
@@ -126,18 +115,82 @@ class LoginController extends GetxController {
     bool isPhoneValid = validatePhone();
     bool isPasswordValid = validatePassword();
     if (!isEmailValid || !isPhoneValid || !isPasswordValid) {
-      ErrorDialog.showDialog();
+      return false;
+    } else {
+      LoadingDialog.showDialog();
+      return await _performAPICall();
+    }
+  }
+
+  Future<bool> _performAPICall() async {
+    Response? response;
+    try {
+      response = await DioRequests.requestLogin(
+        email: emailController.value.text,
+        password: passwordController.value.text,
+        phone: phoneController.value.text,
+      );
+      Get.back();
+      if (response == null) {
+        ErrorDialog.showDialog();
+        throw Exception("response is null");
+      } else {
+        final data = response.data;
+        switch (response.statusCode) {
+          case 200:
+            clearAllErrors();
+            _settingsService.setToken(
+              newToken: data['token'],
+              rememberMe: _rememberMe,
+            );
+            _settingsService.setRefreshToken(
+              newToken: data['refresh_token'],
+              rememberMe: _rememberMe,
+            );
+            _settingsService.setUserId(
+              id: data['data']['id'],
+              rememberMe: _rememberMe,
+            );
+            _settingsService.setLoginState(
+              isLoggedIn: true,
+              rememberMe: _rememberMe,
+            );
+            _settingsService.printInfo();
+            return true;
+          case 404:
+            emailError = "Email is not registered yet";
+            IncorrectInfoDialog.showDialog(
+              content: _emailError,
+            );
+            break;
+          case 401:
+            Get.toNamed("/authentication");
+            IncorrectInfoDialog.showDialog(
+              content: "Verify your email then try again",
+            );
+            break;
+          case 422:
+            final String message;
+            if (data['message'] == "Invalid password") {
+              message = "Password is incorrect";
+              passwordError = message;
+            } else {
+              message = "Phone number is incorrect";
+              phoneError = message;
+            }
+            IncorrectInfoDialog.showDialog(
+              content: message,
+            );
+            break;
+          default:
+            throw Exception(
+                "Unknown response status code: ${response.toString()}");
+        }
+        throw Exception(response.toString());
+      }
+    } catch (e) {
+      debugPrint("Login Controller: $e");
       return false;
     }
-    if (_emailError == null && _phoneError == null && _passwordError == null) {
-      if (checkEmailExist() && checkPhoneExist() && checkPassword()) {
-        await setToken();
-        return true;
-      } else {
-        IncorrectInfoDialog.showDialog();
-        return false;
-      }
-    }
-    return false;
   }
 }

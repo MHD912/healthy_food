@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter/material.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
+import 'package:healthy_food/controller/logout_controller.dart';
 
 class LogoutDialog extends StatelessWidget {
+  final _controller = Get.find<LogoutController>();
   final double _deviceHeight, _deviceWidth;
   LogoutDialog({super.key})
       : _deviceHeight = Get.height,
@@ -107,8 +108,13 @@ class LogoutDialog extends StatelessWidget {
   Widget _confirmLogoutButton() {
     return _customButton(
       onPressed: () {
-        GetStorage().remove("token");
-        Get.offAllNamed('/login');
+        _controller.requestLogout().then(
+          (result) {
+            if (result == true) {
+              Get.offAllNamed('/login');
+            }
+          },
+        );
       },
       label: "Yes, Log Me out",
     );
