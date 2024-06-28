@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:healthy_food/controller/home_controller.dart';
+import 'package:healthy_food/core/service/settings_service.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/logout_dialog.dart';
 import 'package:healthy_food/core/widget/quit_on_double_back.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final _settingsService = Get.find<SettingsService>();
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +33,10 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              GetBuilder<HomeController>(
-                builder: (controller) => Text(
-                  "User: ${controller.getUserId()}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
+              Text(
+                "User: ${_settingsService.getUserId()}",
+                style: const TextStyle(
+                  fontSize: 18,
                 ),
               ),
             ],

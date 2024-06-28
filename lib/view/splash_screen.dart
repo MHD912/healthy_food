@@ -5,7 +5,8 @@ import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/core/widget/background_eclipse_gradient.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+  final double _deviceHeight;
+  SplashScreen({super.key}) : _deviceHeight = Get.height;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class SplashScreen extends StatelessWidget {
                 opacity: controller.animationValue,
                 duration: const Duration(milliseconds: 1000),
                 child: Container(
-                  height: 135,
+                  height: _deviceHeight * 0.15,
                   padding: const EdgeInsets.only(bottom: 50),
                   decoration: const BoxDecoration(
                     image: DecorationImage(

@@ -15,14 +15,12 @@ class SettingsService extends GetxService {
   SettingsService() {
     _getStorage.writeIfNull('user_id', null);
     _getStorage.writeIfNull('token', null);
-    _getStorage.writeIfNull('refresh_token', null);
     _getStorage.writeIfNull('is_logged_in', null);
     _userInfo = UserInfo.fromMap(
       Map<String, dynamic>.from(
         {
           'user_id': _getStorage.read('user_id'),
           'token': _getStorage.read('token'),
-          'refresh_token': _getStorage.read('refresh_token'),
           'is_logged_in': _getStorage.read('is_logged_in'),
         },
       ),
@@ -44,22 +42,6 @@ class SettingsService extends GetxService {
 
   String getToken() {
     return _userInfo.token;
-  }
-
-  void setRefreshToken({
-    required String newToken,
-    required bool rememberMe,
-  }) {
-    _userInfo.refreshToken = newToken;
-    if (rememberMe) {
-      GetStorage().write('refresh_token', newToken);
-    } else {
-      GetStorage().write('refresh_token', "");
-    }
-  }
-
-  String getRefreshToken() {
-    return _userInfo.refreshToken;
   }
 
   void setUserId({
@@ -84,9 +66,9 @@ class SettingsService extends GetxService {
   }) {
     _userInfo.isLoggedIn = isLoggedIn;
     if (rememberMe) {
-      GetStorage().write('logged_in', isLoggedIn);
+      GetStorage().write('is_logged_in', isLoggedIn);
     } else {
-      GetStorage().write('logged_in', false);
+      GetStorage().write('is_logged_in', false);
     }
   }
 
@@ -97,10 +79,8 @@ class SettingsService extends GetxService {
   void logout() {
     _getStorage.write('user_id', null);
     _getStorage.write('token', null);
-    _getStorage.write('refresh_token', null);
     _getStorage.write('is_logged_in', null);
     _userInfo.clearData();
-    debugPrint(_userInfo.toString());
   }
 
   void printInfo() {

@@ -90,19 +90,6 @@ class DioRequests {
     return response;
   }
 
-  static Future<Response?> requestRefreshToken() async {
-    Response? response;
-    try {
-      response = await _dioService.get(
-        url: "auth/refresh-token",
-        authToken: _settingsService.getRefreshToken(),
-      );
-    } catch (e) {
-      debugPrint("Refresh Token API: $e");
-    }
-    return response;
-  }
-
   static Future<Response?> requestVerifyEmail({
     required String code,
   }) async {
@@ -116,7 +103,6 @@ class DioRequests {
       response = await _dioService.post(
         url: "auth/email/verify",
         data: formData,
-        authToken: _settingsService.getToken(),
       );
     } catch (e) {
       debugPrint("Verify Email API: $e");

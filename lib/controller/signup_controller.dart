@@ -277,10 +277,6 @@ class SignupController extends GetxController {
               newToken: data['token'],
               rememberMe: true,
             );
-            _settingsService.setRefreshToken(
-              newToken: data['refresh_token'],
-              rememberMe: true,
-            );
             debugPrint(data.toString());
             return true;
           case 422:

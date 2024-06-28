@@ -13,7 +13,7 @@ import 'package:healthy_food/view/authentication_page.dart';
 final routes = [
   GetPage(
     name: '/splash_screen',
-    page: () => const SplashScreen(),
+    page: () => SplashScreen(),
     binding: SplashBindings(),
     middlewares: [
       PrecacheMiddleware(),
@@ -56,7 +56,7 @@ final routes = [
   ),
   GetPage(
     name: '/home',
-    page: () => const HomePage(),
+    page: () => HomePage(),
     binding: HomeBindings(),
     transition: Transition.rightToLeft,
     transitionDuration: const Duration(milliseconds: 500),

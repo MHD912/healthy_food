@@ -209,7 +209,7 @@ will send you a link for resetting your password!''',
   Widget _signupButton() {
     return TextButton(
       onPressed: () {
-        Get.offAllNamed('/signup');
+        Get.offNamed('/signup');
       },
       style: ButtonStyle(
         visualDensity: VisualDensity.compact,

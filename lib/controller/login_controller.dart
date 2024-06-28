@@ -138,10 +138,6 @@ class LoginController extends GetxController {
               newToken: data['token'],
               rememberMe: _rememberMe,
             );
-            _settingsService.setRefreshToken(
-              newToken: data['refresh_token'],
-              rememberMe: _rememberMe,
-            );
             _settingsService.setUserId(
               id: data['data']['id'],
               rememberMe: _rememberMe,

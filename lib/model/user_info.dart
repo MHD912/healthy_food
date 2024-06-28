@@ -1,10 +1,9 @@
 class UserInfo {
-  String token, refreshToken;
+  String token;
   int userId;
   bool isLoggedIn;
   UserInfo({
     required this.token,
-    required this.refreshToken,
     required this.userId,
     required this.isLoggedIn,
   });
@@ -13,7 +12,6 @@ class UserInfo {
     return UserInfo(
       userId: data['user_id'] ?? -1,
       token: data['token'] ?? "",
-      refreshToken: data['refresh_token'] ?? "",
       isLoggedIn: data['is_logged_in'] ?? false,
     );
   }
@@ -22,7 +20,6 @@ class UserInfo {
       {
         'user_id': userId,
         'token': token,
-        'refresh_token': refreshToken,
         'is_logged_in': isLoggedIn,
       },
     );
@@ -30,12 +27,12 @@ class UserInfo {
 
   void clearData() {
     isLoggedIn = false;
-    token = refreshToken = "";
+    token = "";
     userId = -1;
   }
 
   @override
   String toString() {
-    return "{token: $token, refresh_token: $refreshToken, user_id: $userId, logged_in: $isLoggedIn}";
+    return "{token: $token, user_id: $userId, logged_in: $isLoggedIn}";
   }
 }
