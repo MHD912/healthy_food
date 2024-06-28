@@ -228,7 +228,9 @@ class LoginPage extends StatelessWidget {
 
   Widget _forgotPasswordButton() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Get.toNamed('/forgot_password');
+      },
       style: ButtonStyle(
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 8),

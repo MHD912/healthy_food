@@ -135,4 +135,11 @@ class DioRequests {
     }
     return response;
   }
+
+  static Future<Response?> requestForgotPassword({
+    required String email,
+  }) async {
+    Response? response;
+    return response;
+  }
 }
