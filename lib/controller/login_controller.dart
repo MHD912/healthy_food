@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
 import 'package:get/instance_manager.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:healthy_food/core/widget/error_dialog.dart';
 import 'package:healthy_food/core/utility/dio_requests.dart';
+import 'package:healthy_food/core/widget/loading_dialog.dart';
 import 'package:healthy_food/core/service/settings_service.dart';
 import 'package:healthy_food/core/widget/incorrect_info_dialog.dart';
-import 'package:healthy_food/core/widget/loading_dialog.dart';
 
 class LoginController extends GetxController {
   final _settingsService = Get.find<SettingsService>();
@@ -100,10 +99,6 @@ class LoginController extends GetxController {
   void toggleShowPassword() {
     _hidePassword = !_hidePassword;
     update(['password']);
-  }
-
-  Future<void> setToken() async {
-    await GetStorage().write('token', 'value');
   }
 
   void clearAllErrors() {

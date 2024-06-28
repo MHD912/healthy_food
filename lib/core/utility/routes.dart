@@ -3,6 +3,7 @@ import 'package:flutter/animation.dart';
 import 'package:healthy_food/core/middleware/auth_middleware.dart';
 import 'package:healthy_food/core/middleware/precache_middleware.dart';
 import 'package:healthy_food/core/utility/app_bindings.dart';
+import 'package:healthy_food/view/forgot_password_page.dart';
 import 'package:healthy_food/view/home_page.dart';
 import 'package:healthy_food/view/login_page.dart';
 import 'package:healthy_food/view/signup_page.dart';
@@ -33,6 +34,14 @@ final routes = [
     name: '/signup',
     page: () => SignupPage(),
     binding: SignupBindings(),
+    transition: Transition.rightToLeft,
+    transitionDuration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
+  ),
+  GetPage(
+    name: '/forgot_password',
+    page: () => ForgotPasswordPage(),
+    binding: ForgotPasswordBindings(),
     transition: Transition.rightToLeft,
     transitionDuration: const Duration(milliseconds: 500),
     curve: Curves.easeInOut,
