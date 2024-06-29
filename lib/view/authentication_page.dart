@@ -144,6 +144,12 @@ class AuthenticationPage extends StatelessWidget {
               fontFamily: 'Cabin',
               fontSize: 15,
             ),
+            pastedTextStyle: TextStyle(
+              color: AppTheme.darkGreyColor,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cabin',
+              fontSize: 15,
+            ),
             errorTextSpace: 25,
             pinTheme: PinTheme(
               shape: PinCodeFieldShape.circle,
@@ -165,6 +171,13 @@ class AuthenticationPage extends StatelessWidget {
               VerifyCodeTextFormatter(),
             ],
             validator: controller.validator,
+            beforeTextPaste: (text) => false,
+            dialogConfig: DialogConfig(
+              dialogContent: "Do you want to paste code?",
+              affirmativeText: "paste",
+              negativeText: "cancel",
+              platform: PinCodePlatform.other,
+            ),
             onTap: () {
               controller.clearValidator();
               Future.delayed(

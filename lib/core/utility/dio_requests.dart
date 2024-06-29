@@ -122,6 +122,8 @@ class DioRequests {
     return response;
   }
 
+  /// This API is not available yet. It only returns a null value.
+  ///
   static Future<Response?> requestForgotPassword({
     required String email,
   }) async {
