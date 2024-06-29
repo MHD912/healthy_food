@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
 import 'package:healthy_food/core/theme/app_theme.dart';
 import 'package:healthy_food/controller/logout_controller.dart';
+import 'package:healthy_food/core/widget/error_dialog.dart';
 
 class LogoutDialog extends StatelessWidget {
   final _controller = Get.find<LogoutController>();
@@ -112,6 +113,8 @@ class LogoutDialog extends StatelessWidget {
           (result) {
             if (result == true) {
               Get.offAllNamed('/login');
+            } else {
+              ErrorDialog.showDialog();
             }
           },
         );
