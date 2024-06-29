@@ -25,7 +25,6 @@ class SettingsService extends GetxService {
         },
       ),
     );
-    debugPrint(_userInfo.toString());
   }
 
   void setToken({

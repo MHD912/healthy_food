@@ -67,7 +67,8 @@ class ForgotPasswordController extends GetxController {
         }
       }
     } catch (e) {
-      debugPrint("Login Controller: $e");
+      debugPrint("Forgot Password Controller: $e");
+      debugPrint("Forgot Password Controller: $response");
       return false;
     }
   }

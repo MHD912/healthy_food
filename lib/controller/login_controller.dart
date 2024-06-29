@@ -181,6 +181,7 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       debugPrint("Login Controller: $e");
+      debugPrint("Login Controller: $response");
       return false;
     }
   }

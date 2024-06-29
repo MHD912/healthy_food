@@ -95,7 +95,6 @@ class DioRequests {
   }) async {
     Response? response;
     try {
-      debugPrint("requestVerifyEmail: id is ${_settingsService.getUserId()}");
       FormData formData = FormData.fromMap({
         "user_id": _settingsService.getUserId(),
         "verification_code": code,

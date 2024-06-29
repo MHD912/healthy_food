@@ -179,7 +179,6 @@ class SignupController extends GetxController {
     );
 
     if (pickedFile != null) {
-      debugPrint("Read Image Successfully!");
       _image = File(pickedFile.path);
       update(['profile_picture']);
 
@@ -194,7 +193,6 @@ class SignupController extends GetxController {
       source: ImageSource.camera,
     );
     if (pickedFile != null) {
-      debugPrint("Read Image Successfully!");
       _image = File(pickedFile.path);
       update(['profile_picture']);
       return true;
@@ -216,9 +214,7 @@ class SignupController extends GetxController {
     );
 
     if (result != null) {
-      debugPrint("Read File Successfully!");
       _certificate = result.files.single;
-      debugPrint(_certificate!.name);
       update(['certificate']);
       return true;
     }
@@ -277,7 +273,6 @@ class SignupController extends GetxController {
               newToken: data['token'],
               rememberMe: true,
             );
-            debugPrint(data.toString());
             return true;
           case 422:
             if (data['errors']['email'] != null) {
@@ -301,6 +296,7 @@ class SignupController extends GetxController {
       }
     } catch (e) {
       debugPrint("Signup Controller: $e");
+      debugPrint("Signup Controller: $response");
       return false;
     }
   }

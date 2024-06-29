@@ -117,7 +117,7 @@ class AuthenticationController extends GetxController {
             }
           } catch (e) {
             debugPrint("Authentication Controller: $e");
-            debugPrint("Authentication Controller: ${response.toString()}");
+            debugPrint("Authentication Controller: $response");
             return false;
           }
         }
@@ -146,6 +146,7 @@ class AuthenticationController extends GetxController {
       }
     } catch (e) {
       debugPrint("Authentication Controller: $e");
+      debugPrint("Authentication Controller: $response");
       return false;
     }
   }

@@ -57,8 +57,8 @@ class DioService extends GetxService {
     } on DioException catch (e) {
       debugPrint(
           "DioService: Could not perform POST request to [ ${_dio.options.baseUrl}$url ]");
-      debugPrint(response.toString());
-      debugPrint(e.toString());
+      debugPrint("DioService: $e");
+      debugPrint("DioService: $response");
       return response;
     }
   }
@@ -90,10 +90,11 @@ class DioService extends GetxService {
         ),
       );
       return response;
-    } on DioException catch (_) {
+    } on DioException catch (e) {
       debugPrint(
-          "DioService: Could not perform GET request to [ ${_dio.options.baseUrl}$url ]");
-      debugPrint(response.toString());
+          "DioService: Could not perform POST request to [ ${_dio.options.baseUrl}$url ]");
+      debugPrint("DioService: $e");
+      debugPrint("DioService: $response");
       return response;
     }
   }
